@@ -1,0 +1,1734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>News Classification Ontology (NCO)</title>
+<meta name="description" content="News Classification Ontology (NCO) 2.2: classes, properties and axioms in OWL Manchester syntax.">
+<link rel="canonical" href="https://enridaga.github.io/nco/v2.2/">
+<link rel="alternate" type="text/turtle" href="ontology.ttl"><link rel="alternate" type="application/rdf+xml" href="ontology.owl"><link rel="alternate" type="application/ld+json" href="ontology.jsonld"><link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,650;1,6..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper: #ffffff;
+  --ink: #1c2230;
+  --muted: #5b6475;
+  --rule: #dce1e8;
+  --surface: #f4f6f9;
+  --link: #1d4e89;
+  --kw: #8a2d5c;
+  --sec: #6a7385;
+  --lit: #2f6b3a;
+  --ext: #5b6475;
+  --k-class: #1d4e89;
+  --k-prop: #8a2d5c;
+  --k-data: #9a5b13;
+  --k-ind: #2f6b3a;
+  --k-ann: #8a93a3;
+  --target: #fbf5df;
+  --serif: "Newsreader", Georgia, "Times New Roman", serif;
+  --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #12161d; --ink: #e3e7ee; --muted: #9aa3b2; --rule: #2b3340;
+    --surface: #1a2029; --link: #8db4f0; --kw: #e89ac0; --sec: #8f99aa;
+    --lit: #9bd3a3; --ext: #9aa3b2; --k-class: #8db4f0; --k-prop: #e89ac0;
+    --k-data: #e6b06a; --k-ind: #9bd3a3; --k-ann: #6c7686; --target: #1e2a3c;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #12161d; --ink: #e3e7ee; --muted: #9aa3b2; --rule: #2b3340;
+  --surface: #1a2029; --link: #8db4f0; --kw: #e89ac0; --sec: #8f99aa;
+  --lit: #9bd3a3; --ext: #9aa3b2; --k-class: #8db4f0; --k-prop: #e89ac0;
+  --k-data: #e6b06a; --k-ind: #9bd3a3; --k-ann: #6c7686; --target: #1e2a3c;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-padding-top: 1.5rem; }
+body {
+  margin: 0; background: var(--paper); color: var(--ink);
+  font: 400 1.125rem/1.6 var(--serif);
+  font-optical-sizing: auto;
+  text-rendering: optimizeLegibility;
+}
+a { color: var(--link); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+a:focus-visible, button:focus-visible, input:focus-visible {
+  outline: 2px solid var(--link); outline-offset: 2px; border-radius: 2px;
+}
+code { font: 0.86em/1 var(--mono); background: var(--surface); padding: 0.1em 0.3em; border-radius: 3px; }
+
+/* ---------- layout ---------- */
+.layout { display: grid; grid-template-columns: 17rem minmax(0, 1fr); }
+nav.toc {
+  position: sticky; top: 0; height: 100vh; overflow-y: auto;
+  border-right: 1px solid var(--rule); padding: 1.5rem 1.25rem 3rem;
+  font-size: 0.95rem; line-height: 1.35;
+}
+main { padding: 3rem clamp(1rem, 5vw, 4.5rem) 6rem; max-width: 60rem; }
+.prose { max-width: 42rem; }
+
+/* ---------- sidebar ---------- */
+.toc .brand { font-weight: 650; font-size: 1.05rem; text-decoration: none; color: var(--ink); }
+.toc .brand span { display: block; font-weight: 400; color: var(--muted); font-size: 0.9rem; }
+.toc input {
+  width: 100%; margin: 1rem 0 0.75rem; padding: 0.45rem 0.6rem;
+  font: inherit; font-size: 0.95rem; color: var(--ink);
+  background: var(--surface); border: 1px solid var(--rule); border-radius: 4px;
+}
+.toc ol, .toc ul { list-style: none; margin: 0; padding: 0; }
+.toc > ol > li { margin: 0.5rem 0; }
+.toc-body > ol > li > a { color: var(--ink); font-weight: 500; text-decoration: none; }
+.toc-body > ol > li > a:hover { color: var(--link); }
+.toc ul { margin: 0.25rem 0 0.5rem 0.75rem; border-left: 1px solid var(--rule); }
+.toc ul li a {
+  display: block; padding: 0.12rem 0 0.12rem 0.65rem; color: var(--muted);
+  text-decoration: none; font-size: 0.9rem;
+}
+.toc ul li a:hover, .toc a.here { color: var(--link); }
+.toc a.here { box-shadow: inset 2px 0 0 var(--link); }
+.toc .empty { display: none; color: var(--muted); font-size: 0.9rem; font-style: italic; }
+.toc .theme {
+  margin-top: 1.5rem; background: none; border: 1px solid var(--rule); color: var(--muted);
+  font: inherit; font-size: 0.85rem; padding: 0.3rem 0.6rem; border-radius: 4px; cursor: pointer;
+}
+
+/* ---------- header ---------- */
+header.doc h1 {
+  font-size: clamp(2.2rem, 4.5vw, 3.4rem); line-height: 1.05; font-weight: 500;
+  letter-spacing: -0.015em; margin: 0 0 0.4rem; max-width: 18ch;
+}
+header.doc .sub { color: var(--muted); margin: 0 0 2rem; font-style: italic; }
+dl.meta { display: grid; grid-template-columns: max-content 1fr; gap: 0.35rem 1.5rem; margin: 0 0 2.5rem; font-size: 1rem; }
+dl.meta dt { color: var(--muted); }
+dl.meta dd { margin: 0; overflow-wrap: anywhere; }
+dl.meta .iri { font-family: var(--mono); font-size: 0.86em; }
+.downloads a { margin-right: 0.9rem; white-space: nowrap; }
+
+/* ---------- sections ---------- */
+h2 {
+  font-size: 1.75rem; font-weight: 500; margin: 4rem 0 1rem; padding-top: 1rem;
+  border-top: 1px solid var(--rule); letter-spacing: -0.01em;
+}
+h2 .n, h3 .n { color: var(--muted); font-weight: 400; margin-right: 0.5rem; }
+h3 { font-size: 1.25rem; font-weight: 500; margin: 2rem 0 0.5rem; }
+.counts { color: var(--muted); }
+.tree ul { list-style: none; margin: 0; padding-left: 1.1rem; border-left: 1px solid var(--rule); }
+.tree > ul { padding-left: 0; border: 0; }
+.tree li { margin: 0.15rem 0; }
+.tree a { text-decoration: none; }
+.tree a:hover { text-decoration: underline; }
+.trees { display: grid; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); gap: 1rem 2.5rem; font-size: 1rem; }
+
+/* ---------- terms ---------- */
+article.term { margin: 0 0 3rem; padding-top: 0.5rem; scroll-margin-top: 1rem; }
+article.term:target .frame { background: var(--target); }
+article.term h3 { font-size: 1.6rem; margin: 0; font-weight: 500; letter-spacing: -0.01em; }
+article.term h3 a.self { color: inherit; text-decoration: none; }
+article.term h3 a.self:hover::after { content: "#"; color: var(--muted); margin-left: 0.35rem; font-weight: 400; }
+.iriline span { overflow-wrap: anywhere; }
+.iriline { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.25rem 0.75rem; margin: 0.2rem 0 0.8rem; font-family: var(--mono); font-size: 0.82rem; color: var(--muted); }
+.iriline button {
+  font: inherit; font-size: 0.78rem; color: var(--muted); background: none;
+  border: 1px solid var(--rule); border-radius: 3px; padding: 0.05rem 0.4rem; cursor: pointer;
+}
+.iriline button:hover { color: var(--link); border-color: var(--link); }
+.deprecated { color: #a3381e; font-family: var(--serif); font-style: italic; }
+.term .prose p { margin: 0 0 0.7rem; }
+.term .note { color: var(--muted); font-size: 1rem; }
+.term .note p { display: inline; }
+.term .note b { font-weight: 500; color: var(--ink); }
+
+pre.frame {
+  margin: 0.9rem 0 0.6rem; padding: 0.9rem 1.1rem; overflow-x: auto;
+  background: var(--surface); border-left: 3px solid var(--k-class);
+  border-radius: 0 4px 4px 0;
+  font: 400 0.86rem/1.6 var(--mono); tab-size: 4; color: var(--ink);
+}
+pre.frame.ObjectProperty { border-left-color: var(--k-prop); }
+pre.frame.DataProperty { border-left-color: var(--k-data); }
+pre.frame.Individual { border-left-color: var(--k-ind); }
+pre.frame.AnnotationProperty, pre.frame.general { border-left-color: var(--k-ann); }
+pre.frame a { text-decoration: none; }
+pre.frame a.t { color: var(--link); }
+pre.frame a.t:hover, pre.frame a.x:hover { text-decoration: underline; }
+pre.frame a.x { color: var(--ext); }
+pre.frame .kw { color: var(--kw); font-weight: 500; }
+pre.frame .sec { color: var(--sec); font-weight: 500; }
+pre.frame .lit { color: var(--lit); }
+pre.frame .head { font-weight: 500; }
+.refs { font-size: 0.95rem; color: var(--muted); margin: 0.2rem 0 0; }
+.refs a { white-space: nowrap; }
+
+table.ns { border-collapse: collapse; font-size: 0.9rem; width: 100%; }
+table.ns td { padding: 0.3rem 1rem 0.3rem 0; border-bottom: 1px solid var(--rule); vertical-align: top; }
+table.ns td:first-child { font-family: var(--mono); white-space: nowrap; }
+table.ns td:last-child { font-family: var(--mono); overflow-wrap: anywhere; color: var(--muted); }
+footer { margin-top: 5rem; color: var(--muted); font-size: 0.95rem; border-top: 1px solid var(--rule); padding-top: 1rem; }
+.legacy-note { background: var(--target); padding: 0.6rem 0.9rem; border-radius: 4px; font-size: 1rem; margin-bottom: 1.5rem; }
+
+@media (max-width: 860px) {
+  .layout { display: block; }
+  nav.toc { position: static; height: auto; border-right: 0; border-bottom: 1px solid var(--rule); padding: 1rem; }
+  nav.toc details:not([open]) .toc-body { display: none; }
+  main { padding: 2rem 1rem 4rem; }
+  dl.meta { grid-template-columns: 1fr; gap: 0; }
+  dl.meta dd { margin-bottom: 0.6rem; }
+}
+@media (min-width: 861px) { nav.toc summary { display: none; } }
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+@media print {
+  nav.toc { display: none; } .layout { display: block; }
+  pre.frame { white-space: pre-wrap; break-inside: avoid; }
+}
+</style>
+</head>
+<body>
+<div class="layout">
+
+<nav class="toc" aria-label="Contents">
+  <details open>
+  <summary>Contents</summary>
+  <div class="toc-body">
+  <a class="brand" href="#top">NCO <span>Version 2.2</span></a>
+  <label for="filter" class="visually-hidden" style="position:absolute;left:-9999px">Filter terms</label>
+  <input id="filter" type="search" placeholder="Filter terms" autocomplete="off">
+  <p class="empty" id="no-match">No terms match.</p>
+  <ol>
+    <li><a href="#introduction">Introduction</a></li>
+    <li><a href="#overview">Overview</a></li>
+    <li><a href="#class-index">Classes</a>
+      <ul>
+        <li data-term="agent agent"><a href="#Agent">Agent</a></li>
+        <li data-term="agent component agentcomponent"><a href="#AgentComponent">Agent component</a></li>
+        <li data-term="agent role agentrole"><a href="#AgentRole">Agent role</a></li>
+        <li data-term="aspect aspect"><a href="#Aspect">Aspect</a></li>
+        <li data-term="categoricaltopic categoricaltopic"><a href="#CategoricalTopic">CategoricalTopic</a></li>
+        <li data-term="claim claim"><a href="#Claim">Claim</a></li>
+        <li data-term="collection collection"><a href="#Collection">Collection</a></li>
+        <li data-term="collection of events collectionofevents"><a href="#CollectionOfEvents">Collection of events</a></li>
+        <li data-term="datatype datatype"><a href="#DataType">DataType</a></li>
+        <li data-term="description description"><a href="#Description">Description</a></li>
+        <li data-term="entity entity"><a href="#Entity">Entity</a></li>
+        <li data-term="event event"><a href="#Event">Event</a></li>
+        <li data-term="eventorsituation eventorsituation"><a href="#EventOrSituation">EventOrSituation</a></li>
+        <li data-term="justification justification"><a href="#Justification">Justification</a></li>
+        <li data-term="location location"><a href="#Location">Location</a></li>
+        <li data-term="negative event negativeevent"><a href="#NegativeEvent">Negative event</a></li>
+        <li data-term="news item newsitem"><a href="#NewsItem">News item</a></li>
+        <li data-term="newssource newssource"><a href="#NewsSource">NewsSource</a></li>
+        <li data-term="omission event omissionevent"><a href="#OmissionEvent">Omission event</a></li>
+        <li data-term="organization organization"><a href="#Organization">Organization</a></li>
+        <li data-term="person person"><a href="#Person">Person</a></li>
+        <li data-term="personoroganization personoroganization"><a href="#PersonOrOganization">PersonOrOganization</a></li>
+        <li data-term="predicate predicate"><a href="#Predicate">Predicate</a></li>
+        <li data-term="predicted event predictionevent"><a href="#PredictionEvent">Predicted event</a></li>
+        <li data-term="publisher publisher"><a href="#Publisher">Publisher</a></li>
+        <li data-term="situation situation"><a href="#Situation">Situation</a></li>
+        <li data-term="statement statement"><a href="#Statement">Statement</a></li>
+        <li data-term="text text"><a href="#Text">Text</a></li>
+        <li data-term="topic topic"><a href="#Topic">Topic</a></li>
+        <li data-term="unifying factor unifyingfactor"><a href="#UnifyingFactor">Unifying factor</a></li>
+        <li data-term="utterance utterance"><a href="#Utterance">Utterance</a></li>
+        <li data-term="utterancetype utterancetype"><a href="#UtteranceType">UtteranceType</a></li>
+        <li data-term="viewpoint viewpoint"><a href="#Viewpoint">Viewpoint</a></li>
+      </ul>
+    </li>
+    <li><a href="#objectproperty-index">Object properties</a>
+      <ul>
+        <li data-term="characterised by characterisedby"><a href="#characterisedBy">characterised by</a></li>
+        <li data-term="characterises characterises"><a href="#characterises">characterises</a></li>
+        <li data-term="claiminnewsitem claiminnewsitem"><a href="#claimInNewsItem">claimInNewsItem</a></li>
+        <li data-term="concerns topic concernstopic"><a href="#concernsTopic">concerns topic</a></li>
+        <li data-term="depends on dependson"><a href="#dependsOn">depends on</a></li>
+        <li data-term="event depends on eventdependson"><a href="#eventDependsOn">event depends on</a></li>
+        <li data-term="has agent hasagent"><a href="#hasAgent">has agent</a></li>
+        <li data-term="has agent component hasagentcomponent"><a href="#hasAgentComponent">has agent component</a></li>
+        <li data-term="has agent role hasagentrole"><a href="#hasAgentRole">has agent role</a></li>
+        <li data-term="has aspect hasaspect"><a href="#hasAspect">has aspect</a></li>
+        <li data-term="has claim hasclaim"><a href="#hasClaim">has claim</a></li>
+        <li data-term="has element haselement"><a href="#hasElement">has element</a></li>
+        <li data-term="has justification hasjustification"><a href="#hasJustification">has justification</a></li>
+        <li data-term="has location haslocation"><a href="#hasLocation">has location</a></li>
+        <li data-term="has omitted event hasomittedevent"><a href="#hasOmittedEvent">has omitted event</a></li>
+        <li data-term="has subevent hassubevent"><a href="#hasSubEvent">has subevent</a></li>
+        <li data-term="has subtopic hassubtopic"><a href="#hasSubTopic">has subtopic</a></li>
+        <li data-term="has time hastime"><a href="#hasTime">has time</a></li>
+        <li data-term="has unifying factor hasunifyingfactor"><a href="#hasUnifyingFactor">has unifying factor</a></li>
+        <li data-term="hasnewssource hasnewssource"><a href="#hasNewsSource">hasNewsSource</a></li>
+        <li data-term="hasprediction hasprediction"><a href="#hasPrediction">hasPrediction</a></li>
+        <li data-term="haspublisher haspublisher"><a href="#hasPublisher">hasPublisher</a></li>
+        <li data-term="hastopic hastopic"><a href="#hasTopic">hasTopic</a></li>
+        <li data-term="hasutterance hasutterance"><a href="#hasUtterance">hasUtterance</a></li>
+        <li data-term="hasutterancetype hasutterancetype"><a href="#hasUtteranceType">hasUtteranceType</a></li>
+        <li data-term="hasviewpoint hasviewpoint"><a href="#hasViewpoint">hasViewpoint</a></li>
+        <li data-term="in news item innewsitem"><a href="#inNewsItem">in news item</a></li>
+        <li data-term="includesclaim includesclaim"><a href="#includesClaim">includesClaim</a></li>
+        <li data-term="is aspect of isaspectof"><a href="#isAspectOf">is aspect of</a></li>
+        <li data-term="is claim of isclaimof"><a href="#isClaimOf">is claim of</a></li>
+        <li data-term="is element of iselementof"><a href="#isElementOf">is element of</a></li>
+        <li data-term="is subevent of subeventof"><a href="#subEventOf">is subevent of</a></li>
+        <li data-term="is topic role of topicroleof"><a href="#topicRoleOf">is topic role of</a></li>
+        <li data-term="is unifying factor of isunifyingfactorof"><a href="#isUnifyingFactorOf">is unifying factor of</a></li>
+        <li data-term="isjustificationof isjustificationof"><a href="#isJustificationOf">isJustificationOf</a></li>
+        <li data-term="isomittedeventof isomittedeventof"><a href="#isOmittedEventOf">isOmittedEventOf</a></li>
+        <li data-term="istimeof istimeof"><a href="#isTimeOf">isTimeOf</a></li>
+        <li data-term="object object"><a href="#object">object</a></li>
+        <li data-term="precondition for preconditionfor"><a href="#preconditionFor">precondition for</a></li>
+        <li data-term="precondition for event preconditionforevent"><a href="#preconditionForEvent">precondition for event</a></li>
+        <li data-term="predicate predicate"><a href="#predicate">predicate</a></li>
+        <li data-term="satisfied by ufsatisfiedby"><a href="#ufSatisfiedBy">satisfied by</a></li>
+        <li data-term="satisfies satisfiesuf"><a href="#satisfiesUf">satisfies</a></li>
+        <li data-term="subject subject"><a href="#subject">subject</a></li>
+        <li data-term="subtopic of subtopicof"><a href="#subTopicOf">subtopic of</a></li>
+        <li data-term="topicinnewsitem topicinnewsitem"><a href="#topicInNewsItem">topicInNewsItem</a></li>
+        <li data-term="topicrole topicrole"><a href="#topicRole">topicRole</a></li>
+        <li data-term="viewpointinnewsitem viewpointinnewsitem"><a href="#viewpointInNewsItem">viewpointInNewsItem</a></li>
+      </ul>
+    </li>
+    <li><a href="#dataproperty-index">Data properties</a>
+      <ul>
+        <li data-term="hastext hastext"><a href="#hasText">hasText</a></li>
+        <li data-term="hastextcontext hastextcontext"><a href="#hasTextContext">hasTextContext</a></li>
+        <li data-term="hastitle hastitle"><a href="#hasTitle">hasTitle</a></li>
+        <li data-term="hasurl hasurl"><a href="#hasURL">hasURL</a></li>
+      </ul>
+    </li>
+    <li><a href="#individual-index">Named individuals</a>
+      <ul>
+        <li data-term="directutterance directutterance"><a href="#directUtterance">directUtterance</a></li>
+        <li data-term="hastopic hastopic"><a href="#hasTopic-individual">hasTopic</a></li>
+        <li data-term="indirectutterance indirectutterance"><a href="#indirectUtterance">indirectUtterance</a></li>
+        <li data-term="partiallydirectutterance partiallydirectutterance"><a href="#partiallyDirectUtterance">partiallyDirectUtterance</a></li>
+      </ul>
+    </li>
+<li><a href="#general-axioms">General axioms</a></li>    <li><a href="#namespaces">Namespaces</a></li>
+  </ol>
+  <button class="theme" id="theme" type="button">Switch theme</button>
+  </div>
+  </details>
+</nav>
+
+<main id="top">
+<div class="legacy-note" id="legacy-note" hidden></div>
+
+<header class="doc">
+  <h1>News Classification Ontology (NCO)</h1>
+  <p class="sub">Ontology specification, version 2.2, released 2025-06-25</p>
+  <dl class="meta">
+    <dt>Ontology IRI</dt><dd class="iri">http://data.open.ac.uk/ontology/newsclassification/v2</dd>
+<dt>Version IRI</dt><dd class="iri">http://github.com/EnricoMotta/ontologies/newsclassification/v2.2.0</dd>    <dt>Namespace</dt><dd><span class="iri">nco: &lt;http://data.open.ac.uk/ontology/newsclassification/v2#&gt;</span></dd>
+    <dt>This version</dt><dd><a href="https://enridaga.github.io/nco/v2.2/">https://enridaga.github.io/nco/v2.2/</a></dd>
+    <dt>Latest version</dt><dd><a href="https://enridaga.github.io/nco/">https://enridaga.github.io/nco/</a></dd>
+<dt>Previous versions</dt><dd><a href="../archive/1.4/docs/index.html">1.4.3</a></dd><dt>Authors</dt><dd>Enrico Motta (The Open University)<br>Enrico Daga (The Open University)<br>Aldo Gangemi (ISTC-CNR)</dd><dt>Imports</dt><dd><a class="iri" href="http://www.w3.org/2000/01/rdf-schema#">http://www.w3.org/2000/01/rdf-schema#</a><br><a class="iri" href="http://www.w3.org/2004/02/skos/core">http://www.w3.org/2004/02/skos/core</a><br><a class="iri" href="http://www.w3.org/2006/time#2016">http://www.w3.org/2006/time#2016</a></dd>    <dt>Download</dt><dd class="downloads"><a href="ontology.ttl">Turtle</a><a href="ontology.owl">RDF/XML</a><a href="ontology.nt">N-Triples</a><a href="ontology.jsonld">JSON-LD</a><a href="ontology.omn">Manchester</a></dd>
+<dt>Visualise</dt><dd><a href="webvowl/index.html#ontology">WebVOWL graph</a></dd>    <dt>Source</dt><dd><a href="https://github.com/enridaga/nco">https://github.com/enridaga/nco</a></dd>
+  </dl>
+</header>
+
+<section id="introduction">
+  <h2><span class="n">1</span>Introduction</h2>
+  <div class="prose">
+    <p>The News Classification Ontology (NCO) v2.2. It defines the concepts needed to discuss news coverage.  These concepts include Entities, Events, Situations, Categorical Topics, Claims and Viewpoints. This ontology extends nco v1.4.3 by adding characterizations of agents (persons and organizations) and further developing the modelling of claims and utterances</p>
+<p>Preferred prefix is <code>nco: &lt;https://data.open.ac.uk/ontology/newsclassification/v2#&gt;</code>.</p>
+<p>We import SKOS, TimeOntology</p>    <p>Each term below is described by its OWL&nbsp;2 <a href="https://www.w3.org/TR/owl2-manchester-syntax/">Manchester syntax</a> frame, generated from the ontology source with the OWL API. Names in a frame link to their definitions; terms from other vocabularies link to their IRIs.</p>
+  </div>
+</section>
+
+<section id="overview">
+  <h2><span class="n">2</span>Overview</h2>
+  <p class="counts">
+33 classes, 48 object properties, 4 data properties, 4 named individuals, 2 general axioms.
+  </p>
+  <div class="trees">
+    <div><h3>Class hierarchy</h3><div class="tree"><ul><li><a href="#AgentComponent">Agent component</a></li><li><a href="#AgentRole">Agent role</a></li><li><a href="#Aspect">Aspect</a></li><li><a href="#Collection">Collection</a><ul><li><a href="#CollectionOfEvents">Collection of events</a></li><li><a href="#Description">Description</a></li><li><a href="#Situation">Situation</a></li><li><a href="#Viewpoint">Viewpoint</a></li></ul></li><li><a href="#DataType">DataType</a><ul><li><a href="#Text">Text</a></li></ul></li><li><a href="#Entity">Entity</a><ul><li><a href="#Agent">Agent</a><ul><li><a href="#PersonOrOganization">PersonOrOganization</a><ul><li><a href="#Organization">Organization</a></li><li><a href="#Person">Person</a></li><li><a href="#Publisher">Publisher</a></li></ul></li></ul></li></ul></li><li><a href="#EventOrSituation">EventOrSituation</a><ul><li><a href="#Event">Event</a><ul><li><a href="#NegativeEvent">Negative event</a></li><li><a href="#PredictionEvent">Predicted event</a></li></ul></li><li><a href="#Situation">Situation</a></li></ul></li><li><a href="#Justification">Justification</a></li><li><a href="#Location">Location</a></li><li><a href="#NewsItem">News item</a></li><li><a href="#NewsSource">NewsSource</a></li><li><a href="#OmissionEvent">Omission event</a></li><li><a href="#Predicate">Predicate</a></li><li><a href="#Statement">Statement</a><ul><li><a href="#Claim">Claim</a></li></ul></li><li><a href="#Topic">Topic</a><ul><li><a href="#CategoricalTopic">CategoricalTopic</a></li></ul></li><li><a href="#UnifyingFactor">Unifying factor</a></li><li><a href="#Utterance">Utterance</a></li><li><a href="#UtteranceType">UtteranceType</a></li></ul></div></div>
+<div><h3>Object property hierarchy</h3><div class="tree"><ul><li><a href="#characterisedBy">characterised by</a></li><li><a href="#characterises">characterises</a></li><li><a href="#concernsTopic">concerns topic</a></li><li><a href="#dependsOn">depends on</a><ul><li><a href="#eventDependsOn">event depends on</a><ul><li><a href="#subEventOf">is subevent of</a></li></ul></li></ul></li><li><a href="#hasAgent">has agent</a></li><li><a href="#hasAgentComponent">has agent component</a></li><li><a href="#hasAgentRole">has agent role</a></li><li><a href="#hasAspect">has aspect</a></li><li><a href="#hasClaim">has claim</a></li><li><a href="#hasElement">has element</a><ul><li><a href="#includesClaim">includesClaim</a></li></ul></li><li><a href="#hasJustification">has justification</a></li><li><a href="#hasLocation">has location</a></li><li><a href="#hasOmittedEvent">has omitted event</a></li><li><a href="#hasSubTopic">has subtopic</a></li><li><a href="#hasTime">has time</a></li><li><a href="#hasUnifyingFactor">has unifying factor</a></li><li><a href="#hasNewsSource">hasNewsSource</a></li><li><a href="#hasPrediction">hasPrediction</a></li><li><a href="#hasPublisher">hasPublisher</a></li><li><a href="#hasTopic">hasTopic</a></li><li><a href="#hasUtterance">hasUtterance</a></li><li><a href="#hasUtteranceType">hasUtteranceType</a></li><li><a href="#hasViewpoint">hasViewpoint</a></li><li><a href="#inNewsItem">in news item</a><ul><li><a href="#claimInNewsItem">claimInNewsItem</a></li><li><a href="#topicInNewsItem">topicInNewsItem</a></li><li><a href="#viewpointInNewsItem">viewpointInNewsItem</a></li></ul></li><li><a href="#isAspectOf">is aspect of</a></li><li><a href="#isElementOf">is element of</a><ul><li><a href="#isClaimOf">is claim of</a></li></ul></li><li><a href="#topicRoleOf">is topic role of</a></li><li><a href="#isUnifyingFactorOf">is unifying factor of</a></li><li><a href="#isJustificationOf">isJustificationOf</a></li><li><a href="#isOmittedEventOf">isOmittedEventOf</a></li><li><a href="#isTimeOf">isTimeOf</a></li><li><a href="#object">object</a></li><li><a href="#preconditionFor">precondition for</a><ul><li><a href="#preconditionForEvent">precondition for event</a><ul><li><a href="#hasSubEvent">has subevent</a></li></ul></li></ul></li><li><a href="#predicate">predicate</a></li><li><a href="#ufSatisfiedBy">satisfied by</a></li><li><a href="#satisfiesUf">satisfies</a></li><li><a href="#subject">subject</a></li><li><a href="#subTopicOf">subtopic of</a></li><li><a href="#topicRole">topicRole</a></li></ul></div></div>  </div>
+</section>
+
+<section id="class-index">
+  <h2><span class="n">3</span>Classes</h2>
+  <article class="term" id="Agent" data-term="agent agent">
+    <h3><a class="self" href="#Agent">Agent</a></h3>
+    <div class="iriline">
+      <span>http://data.open.ac.uk/ontology/newsclassification/v2#Agent</span>
+      <button type="button" data-copy="http://data.open.ac.uk/ontology/newsclassification/v2#Agent">Copy IRI</button>
+    </div>
+    <div class="prose">
+    </div>
+    <pre class="frame Class"><span class="sec">Class:</span> <a class="t" href="#Agent" title="Agent">nco:Agent</a>
+<span class="sec">SubClassOf:</span>
+    <a class="t" href="#Entity" title="Entity">nco:Entity</a></pre>
+<p class="refs">Used in: <a href="#AgentComponent">Agent component</a>, <a href="#general-axioms">General axioms</a>, <a href="#hasAgent">has agent</a>, <a href="#PersonOrOganization">PersonOrOganization</a></p>  </article>
+  <article class="term" id="AgentComponent" data-term="agent component agentcomponent">
+    <h3><a class="self" href="#AgentComponent">Agent component</a></h3>
+    <div class="iriline">
+      <span>http://data.open.ac.uk/ontology/newsclassification/v2#AgentComponent</span>
+      <button type="button" data-copy="http://data.open.ac.uk/ontology/newsclassification/v2#AgentComponent">Copy IRI</button>
+    </div>
+    <div class="prose">
+    </div>
+    <pre class="frame Class"><span class="sec">Class:</span> <a class="t" href="#AgentComponent" title="Agent component">nco:AgentComponent</a>
+<span class="sec">SubClassOf:</span>
+        <span class="sec">Annotations:</span> <a class="x" href="http://www.w3.org/2000/01/rdf-schema#comment" title="http://www.w3.org/2000/01/rdf-schema#comment">rdfs:comment</a> <span class="lit">&quot;Agent role is expected but we do not make it mandatory, given that in some cases we may simply refer to an agent without specifying the role played in the event or claim&quot;</span>
+    <a class="t" href="#hasAgentRole" title="has agent role">nco:hasAgentRole</a> <span class="kw">only</span> <a class="t" href="#AgentRole" title="Agent role">nco:AgentRole</a>,
+    <a class="t" href="#hasAgent" title="has agent">nco:hasAgent</a> <span class="kw">exactly</span> 1 <a class="t" href="#Agent" title="Agent">nco:Agent</a></pre>
+<div class="prose note"><b>See also.</b> <p>nao:AgentComponent</p></div><p class="refs">Used in: <a href="#Claim">Claim</a>, <a href="#Event">Event</a>, <a href="#hasAgent">has agent</a>, <a href="#hasAgentComponent">has agent component</a>, <a href="#hasAgentRole">has agent role</a></p>  </article>
+  <article class="term" id="AgentRole" data-term="agent role agentrole">
+    <h3><a class="self" href="#AgentRole">Agent role</a></h3>
+    <div class="iriline">
+      <span>http://data.open.ac.uk/ontology/newsclassification/v2#AgentRole</span>
+      <button type="button" data-copy="http://data.open.ac.uk/ontology/newsclassification/v2#AgentRole">Copy IRI</button>
+    </div>
+    <div class="prose">
+    </div>
+    <pre class="frame Class"><span class="sec">Class:</span> <a class="t" href="#AgentRole" title="Agent role">nco:AgentRole</a></pre>
+<p class="refs">Used in: <a href="#AgentComponent">Agent component</a>, <a href="#hasAgentRole">has agent role</a></p>  </article>
+  <article class="term" id="Aspect" data-term="aspect aspect">
+    <h3><a class="self" href="#Aspect">Aspect</a></h3>
+    <div class="iriline">
+      <span>http://data.open.ac.uk/ontology/newsclassification/v2#Aspect</span>
+      <button type="button" data-copy="http://data.open.ac.uk/ontology/newsclassification/v2#Aspect">Copy IRI</button>
+    </div>
+    <div class="prose">
+<p>The notion of entity aspect discussed here is related to the second level of agenda setting theory, which deals with the salience of the attributes of the entities that are the focus of attention in the media (McCombs et al., 2014)</p>    </div>
+    <pre class="frame Class"><span class="sec">Class:</span> <a class="t" href="#Aspect" title="Aspect">nco:Aspect</a></pre>
+<p class="refs">Used in: <a href="#hasAspect">has aspect</a>, <a href="#isAspectOf">is aspect of</a></p>  </article>
+  <article class="term" id="CategoricalTopic" data-term="categoricaltopic categoricaltopic">
+    <h3><a class="self" href="#CategoricalTopic">CategoricalTopic</a></h3>
+    <div class="iriline">
+      <span>http://data.open.ac.uk/ontology/newsclassification/v2#CategoricalTopic</span>
+      <button type="button" data-copy="http://data.open.ac.uk/ontology/newsclassification/v2#CategoricalTopic">Copy IRI</button>
+    </div>
+    <div class="prose">
+<p>A Categorical Topic is a broad topic for discussion and journalistic analysis that tends to be generally relevant and newsworthy. Such topics include social, economic and political issues, such as crime, poverty, taxation, finances, economic, foreign and defence policies, immigration, party politics, and many others. Broad taxonomies for journalism, such as the IPTC Media Topic NewsCodes, tend to focus on categorical topics</p>    </div>
+    <pre class="frame Class"><span class="sec">Class:</span> <a class="t" href="#CategoricalTopic" title="CategoricalTopic">nco:CategoricalTopic</a>
+<span class="sec">SubClassOf:</span>
+    <a class="t" href="#Topic" title="Topic">nco:Topic</a></pre>
+  </article>
+  <article class="term" id="Claim" data-term="claim claim">
+    <h3><a class="self" href="#Claim">Claim</a></h3>
+    <div class="iriline">
+      <span>http://data.open.ac.uk/ontology/newsclassification/v2#Claim</span>
+      <button type="button" data-copy="http://data.open.ac.uk/ontology/newsclassification/v2#Claim">Copy IRI</button>
+    </div>
+    <div class="prose">
+<p>A claim is logically characterised in this ontology as a reified statement and is also associated with a textual utterance</p>    </div>
+    <pre class="frame Class"><span class="sec">Class:</span> <a class="t" href="#Claim" title="Claim">nco:Claim</a>
+<span class="sec">SubClassOf:</span>
+    <a class="t" href="#Statement" title="Statement">nco:Statement</a>,
+    <a class="t" href="#concernsTopic" title="concerns topic">nco:concernsTopic</a> <span class="kw">only</span> <a class="t" href="#Topic" title="Topic">nco:Topic</a>,
+    <a class="t" href="#hasAgentComponent" title="has agent component">nco:hasAgentComponent</a> <span class="kw">only</span> <a class="t" href="#AgentComponent" title="Agent component">nco:AgentComponent</a>,
+    <a class="t" href="#hasJustification" title="has justification">nco:hasJustification</a> <span class="kw">only</span> <a class="t" href="#Justification" title="Justification">nco:Justification</a>,
+    <a class="t" href="#concernsTopic" title="concerns topic">nco:concernsTopic</a> <span class="kw">min</span> 1 <a class="t" href="#Topic" title="Topic">nco:Topic</a>,
+    <a class="t" href="#hasAgentComponent" title="has agent component">nco:hasAgentComponent</a> <span class="kw">min</span> 1 <a class="t" href="#AgentComponent" title="Agent component">nco:AgentComponent</a>,
+    <a class="t" href="#claimInNewsItem" title="claimInNewsItem">nco:claimInNewsItem</a> <span class="kw">exactly</span> 1 <a class="t" href="#NewsItem" title="News item">nco:NewsItem</a>,
+    <a class="t" href="#hasUtterance" title="hasUtterance">nco:hasUtterance</a> <span class="kw">exactly</span> 1 <a class="t" href="#Utterance" title="Utterance">nco:Utterance</a></pre>
+<p class="refs">Used in: <a href="#claimInNewsItem">claimInNewsItem</a>, <a href="#concernsTopic">concerns topic</a>, <a href="#hasAgentComponent">has agent component</a>, <a href="#hasClaim">has claim</a>, <a href="#hasJustification">has justification</a>, <a href="#hasUtterance">hasUtterance</a>, <a href="#includesClaim">includesClaim</a>, <a href="#Viewpoint">Viewpoint</a></p>  </article>
+  <article class="term" id="Collection" data-term="collection collection">
+    <h3><a class="self" href="#Collection">Collection</a></h3>
+    <div class="iriline">
+      <span>http://data.open.ac.uk/ontology/newsclassification/v2#Collection</span>
+      <button type="button" data-copy="http://data.open.ac.uk/ontology/newsclassification/v2#Collection">Copy IRI</button>
+    </div>
+    <div class="prose">
+<p>Membership of a Collection is predicated on meeting the conditions associated with the associated unifying factor (Carriero et al., 2021).</p>    </div>
+    <pre class="frame Class"><span class="sec">Class:</span> <a class="t" href="#Collection" title="Collection">nco:Collection</a>
+<span class="sec">SubClassOf:</span>
+    <a class="t" href="#hasUnifyingFactor" title="has unifying factor">nco:hasUnifyingFactor</a> <span class="kw">only</span> <a class="t" href="#UnifyingFactor" title="Unifying factor">nco:UnifyingFactor</a>,
+    <a class="t" href="#hasUnifyingFactor" title="has unifying factor">nco:hasUnifyingFactor</a> <span class="kw">max</span> 1 <a class="t" href="#UnifyingFactor" title="Unifying factor">nco:UnifyingFactor</a>
+<span class="sec">DisjointUnionOf:</span>
+    <a class="t" href="#CollectionOfEvents" title="Collection of events">nco:CollectionOfEvents</a>, <a class="t" href="#Description" title="Description">nco:Description</a>, <a class="t" href="#Situation" title="Situation">nco:Situation</a>, <a class="t" href="#Viewpoint" title="Viewpoint">nco:Viewpoint</a></pre>
+<div class="prose note"><b>See also.</b> <p>Class Collection in Dolce D0, dul:Collection</p></div><p class="refs">Used in: <a href="#CollectionOfEvents">Collection of events</a>, <a href="#Description">Description</a>, <a href="#general-axioms">General axioms</a>, <a href="#hasElement">has element</a>, <a href="#hasUnifyingFactor">has unifying factor</a>, <a href="#isElementOf">is element of</a>, <a href="#satisfiesUf">satisfies</a>, <a href="#Situation">Situation</a>, <a href="#Viewpoint">Viewpoint</a></p>  </article>
+  <article class="term" id="CollectionOfEvents" data-term="collection of events collectionofevents">
+    <h3><a class="self" href="#CollectionOfEvents">Collection of events</a></h3>
+    <div class="iriline">
+      <span>http://data.open.ac.uk/ontology/newsclassification/v2#CollectionOfEvents</span>
+      <button type="button" data-copy="http://data.open.ac.uk/ontology/newsclassification/v2#CollectionOfEvents">Copy IRI</button>
+    </div>
+    <div class="prose">
+    </div>
+    <pre class="frame Class"><span class="sec">Class:</span> <a class="t" href="#CollectionOfEvents" title="Collection of events">nco:CollectionOfEvents</a>
+<span class="sec">SubClassOf:</span>
+    <a class="t" href="#Collection" title="Collection">nco:Collection</a>,
+    <a class="t" href="#hasElement" title="has element">nco:hasElement</a> <span class="kw">only</span> <a class="t" href="#Event" title="Event">nco:Event</a></pre>
+<p class="refs">Used in: <a href="#Collection">Collection</a></p>  </article>
+  <article class="term" id="DataType" data-term="datatype datatype">
+    <h3><a class="self" href="#DataType">DataType</a></h3>
+    <div class="iriline">
+      <span>http://data.open.ac.uk/ontology/newsclassification/v2#DataType</span>
+      <button type="button" data-copy="http://data.open.ac.uk/ontology/newsclassification/v2#DataType">Copy IRI</button>
+    </div>
+    <div class="prose">
+    </div>
+    <pre class="frame Class"><span class="sec">Class:</span> <a class="t" href="#DataType" title="DataType">nco:DataType</a></pre>
+<p class="refs">Used in: <a href="#Text">Text</a></p>  </article>
+  <article class="term" id="Description" data-term="description description">
+    <h3><a class="self" href="#Description">Description</a></h3>
+    <div class="iriline">
+      <span>http://data.open.ac.uk/ontology/newsclassification/v2#Description</span>
+      <button type="button" data-copy="http://data.open.ac.uk/ontology/newsclassification/v2#Description">Copy IRI</button>
+    </div>
+    <div class="prose">
+<p>Like a Situation, a Description is also characterised as a Collection of Statements</p>    </div>
+    <pre class="frame Class"><span class="sec">Class:</span> <a class="t" href="#Description" title="Description">nco:Description</a>
+<span class="sec">SubClassOf:</span>
+    <a class="t" href="#Collection" title="Collection">nco:Collection</a>,
+    <a class="t" href="#characterises" title="characterises">nco:characterises</a> <span class="kw">only</span> <a class="t" href="#Situation" title="Situation">nco:Situation</a>,
+    <a class="t" href="#hasElement" title="has element">nco:hasElement</a> <span class="kw">only</span> <a class="t" href="#Statement" title="Statement">nco:Statement</a>,
+    <a class="t" href="#characterises" title="characterises">nco:characterises</a> <span class="kw">min</span> 1 <a class="t" href="#Situation" title="Situation">nco:Situation</a>,
+    <a class="t" href="#hasElement" title="has element">nco:hasElement</a> <span class="kw">min</span> 1 <a class="t" href="#Statement" title="Statement">nco:Statement</a></pre>
+<p class="refs">Used in: <a href="#characterises">characterises</a>, <a href="#Collection">Collection</a>, <a href="#Situation">Situation</a></p>  </article>
+  <article class="term" id="Entity" data-term="entity entity">
+    <h3><a class="self" href="#Entity">Entity</a></h3>
+    <div class="iriline">
+      <span>http://data.open.ac.uk/ontology/newsclassification/v2#Entity</span>
+      <button type="button" data-copy="http://data.open.ac.uk/ontology/newsclassification/v2#Entity">Copy IRI</button>
+    </div>
+    <div class="prose">
+    </div>
+    <pre class="frame Class"><span class="sec">Class:</span> <a class="t" href="#Entity" title="Entity">nco:Entity</a></pre>
+<p class="refs">Used in: <a href="#Agent">Agent</a>, <a href="#hasAspect">has aspect</a></p>  </article>
+  <article class="term" id="Event" data-term="event event">
+    <h3><a class="self" href="#Event">Event</a></h3>
+    <div class="iriline">
+      <span>http://data.open.ac.uk/ontology/newsclassification/v2#Event</span>
+      <button type="button" data-copy="http://data.open.ac.uk/ontology/newsclassification/v2#Event">Copy IRI</button>
+    </div>
+    <div class="prose">
+<p>The notion of Event in NCO is based on the one used by the News Angle Ontology (Motta et al., 2020), which is in turn based on the Simple Event Model (van Hage et al., 2011).  An event in this model is characterised in terms of time, location and the actors involved in the event.  The relation between events and actors is mediated by actor components, which specify the role played by the actor in question in the event.</p>    </div>
+    <pre class="frame Class"><span class="sec">Class:</span> <a class="t" href="#Event" title="Event">nco:Event</a>
+<span class="sec">SubClassOf:</span>
+    <a class="t" href="#EventOrSituation" title="EventOrSituation">nco:EventOrSituation</a>,
+    <a class="t" href="#hasAgentComponent" title="has agent component">nco:hasAgentComponent</a> <span class="kw">only</span> <a class="t" href="#AgentComponent" title="Agent component">nco:AgentComponent</a>,
+    <a class="t" href="#hasLocation" title="has location">nco:hasLocation</a> <span class="kw">only</span> <a class="t" href="#Location" title="Location">nco:Location</a></pre>
+<div class="prose note"><b>See also.</b> <p>nao:Event</p></div><p class="refs">Used in: <a href="#CollectionOfEvents">Collection of events</a>, <a href="#eventDependsOn">event depends on</a>, <a href="#EventOrSituation">EventOrSituation</a>, <a href="#general-axioms">General axioms</a>, <a href="#hasAgentComponent">has agent component</a>, <a href="#hasLocation">has location</a>, <a href="#hasOmittedEvent">has omitted event</a>, <a href="#hasSubEvent">has subevent</a>, <a href="#subEventOf">is subevent of</a>, <a href="#NegativeEvent">Negative event</a>, <a href="#OmissionEvent">Omission event</a>, <a href="#preconditionForEvent">precondition for event</a>, <a href="#PredictionEvent">Predicted event</a></p>  </article>
+  <article class="term" id="EventOrSituation" data-term="eventorsituation eventorsituation">
+    <h3><a class="self" href="#EventOrSituation">EventOrSituation</a></h3>
+    <div class="iriline">
+      <span>http://data.open.ac.uk/ontology/newsclassification/v2#EventOrSituation</span>
+      <button type="button" data-copy="http://data.open.ac.uk/ontology/newsclassification/v2#EventOrSituation">Copy IRI</button>
+    </div>
+    <div class="prose">
+<p>A pragmatic class to avoid having to refer to the union of Event and Situation in several expressions</p>    </div>
+    <pre class="frame Class"><span class="sec">Class:</span> <a class="t" href="#EventOrSituation" title="EventOrSituation">nco:EventOrSituation</a>
+<span class="sec">EquivalentTo:</span>
+    <a class="t" href="#Event" title="Event">nco:Event</a> <span class="kw">or</span> <a class="t" href="#Situation" title="Situation">nco:Situation</a></pre>
+<p class="refs">Used in: <a href="#dependsOn">depends on</a>, <a href="#Event">Event</a>, <a href="#eventDependsOn">event depends on</a>, <a href="#hasTime">has time</a>, <a href="#hasPrediction">hasPrediction</a>, <a href="#preconditionFor">precondition for</a>, <a href="#preconditionForEvent">precondition for event</a>, <a href="#PredictionEvent">Predicted event</a>, <a href="#Situation">Situation</a></p>  </article>
+  <article class="term" id="Justification" data-term="justification justification">
+    <h3><a class="self" href="#Justification">Justification</a></h3>
+    <div class="iriline">
+      <span>http://data.open.ac.uk/ontology/newsclassification/v2#Justification</span>
+      <button type="button" data-copy="http://data.open.ac.uk/ontology/newsclassification/v2#Justification">Copy IRI</button>
+    </div>
+    <div class="prose">
+<p>Class Justification refers to the justification for a claim.  Because this ontology focuses on news classification rather than argumentation, the definition here is simply a placeholder and is not further elaborated</p>    </div>
+    <pre class="frame Class"><span class="sec">Class:</span> <a class="t" href="#Justification" title="Justification">nco:Justification</a>
+<span class="sec">SubClassOf:</span>
+    <a class="x" href="http://www.w3.org/2002/07/owl#Thing" title="http://www.w3.org/2002/07/owl#Thing">owl:Thing</a></pre>
+<p class="refs">Used in: <a href="#Claim">Claim</a>, <a href="#hasJustification">has justification</a></p>  </article>
+  <article class="term" id="Location" data-term="location location">
+    <h3><a class="self" href="#Location">Location</a></h3>
+    <div class="iriline">
+      <span>http://data.open.ac.uk/ontology/newsclassification/v2#Location</span>
+      <button type="button" data-copy="http://data.open.ac.uk/ontology/newsclassification/v2#Location">Copy IRI</button>
+    </div>
+    <div class="prose">
+    </div>
+    <pre class="frame Class"><span class="sec">Class:</span> <a class="t" href="#Location" title="Location">nco:Location</a></pre>
+<div class="prose note"><b>See also.</b> <p>dul:Location</p></div><p class="refs">Used in: <a href="#Event">Event</a>, <a href="#hasLocation">has location</a></p>  </article>
+  <article class="term" id="NegativeEvent" data-term="negative event negativeevent">
+    <h3><a class="self" href="#NegativeEvent">Negative event</a></h3>
+    <div class="iriline">
+      <span>http://data.open.ac.uk/ontology/newsclassification/v2#NegativeEvent</span>
+      <button type="button" data-copy="http://data.open.ac.uk/ontology/newsclassification/v2#NegativeEvent">Copy IRI</button>
+    </div>
+    <div class="prose">
+    </div>
+    <pre class="frame Class"><span class="sec">Class:</span> <a class="t" href="#NegativeEvent" title="Negative event">nco:NegativeEvent</a>
+<span class="sec">SubClassOf:</span>
+    <a class="t" href="#Event" title="Event">nco:Event</a></pre>
+<p class="refs">Used in: <a href="#OmissionEvent">Omission event</a></p>  </article>
+  <article class="term" id="NewsItem" data-term="news item newsitem">
+    <h3><a class="self" href="#NewsItem">News item</a></h3>
+    <div class="iriline">
+      <span>http://data.open.ac.uk/ontology/newsclassification/v2#NewsItem</span>
+      <button type="button" data-copy="http://data.open.ac.uk/ontology/newsclassification/v2#NewsItem">Copy IRI</button>
+    </div>
+    <div class="prose">
+    </div>
+    <pre class="frame Class"><span class="sec">Class:</span> <a class="t" href="#NewsItem" title="News item">nco:NewsItem</a>
+<span class="sec">SubClassOf:</span>
+    <a class="x" href="http://www.w3.org/2002/07/owl#Thing" title="http://www.w3.org/2002/07/owl#Thing">owl:Thing</a>,
+    <a class="t" href="#hasNewsSource" title="hasNewsSource">nco:hasNewsSource</a> <span class="kw">exactly</span> 1 <a class="t" href="#NewsSource" title="NewsSource">nco:NewsSource</a>,
+    <a class="t" href="#hasTitle" title="hasTitle">nco:hasTitle</a> <span class="kw">exactly</span> 1 <a class="x" href="http://www.w3.org/2001/XMLSchema#string" title="http://www.w3.org/2001/XMLSchema#string">xsd:string</a>,
+    <a class="t" href="#hasURL" title="hasURL">nco:hasURL</a> <span class="kw">exactly</span> 1 <a class="x" href="http://www.w3.org/2001/XMLSchema#anyURI" title="http://www.w3.org/2001/XMLSchema#anyURI">xsd:anyURI</a></pre>
+<p class="refs">Used in: <a href="#Claim">Claim</a>, <a href="#claimInNewsItem">claimInNewsItem</a>, <a href="#general-axioms">General axioms</a>, <a href="#hasClaim">has claim</a>, <a href="#hasNewsSource">hasNewsSource</a>, <a href="#hasTitle">hasTitle</a>, <a href="#hasTopic">hasTopic</a>, <a href="#hasViewpoint">hasViewpoint</a>, <a href="#topicInNewsItem">topicInNewsItem</a>, <a href="#viewpointInNewsItem">viewpointInNewsItem</a></p>  </article>
+  <article class="term" id="NewsSource" data-term="newssource newssource">
+    <h3><a class="self" href="#NewsSource">NewsSource</a></h3>
+    <div class="iriline">
+      <span>http://data.open.ac.uk/ontology/newsclassification/v2#NewsSource</span>
+      <button type="button" data-copy="http://data.open.ac.uk/ontology/newsclassification/v2#NewsSource">Copy IRI</button>
+    </div>
+    <div class="prose">
+    </div>
+    <pre class="frame Class"><span class="sec">Class:</span> <a class="t" href="#NewsSource" title="NewsSource">nco:NewsSource</a>
+<span class="sec">SubClassOf:</span>
+    <a class="t" href="#hasPublisher" title="hasPublisher">nco:hasPublisher</a> <span class="kw">exactly</span> 1 <a class="t" href="#Publisher" title="Publisher">nco:Publisher</a></pre>
+<p class="refs">Used in: <a href="#hasNewsSource">hasNewsSource</a>, <a href="#hasPublisher">hasPublisher</a>, <a href="#NewsItem">News item</a></p>  </article>
+  <article class="term" id="OmissionEvent" data-term="omission event omissionevent">
+    <h3><a class="self" href="#OmissionEvent">Omission event</a></h3>
+    <div class="iriline">
+      <span>http://data.open.ac.uk/ontology/newsclassification/v2#OmissionEvent</span>
+      <button type="button" data-copy="http://data.open.ac.uk/ontology/newsclassification/v2#OmissionEvent">Copy IRI</button>
+    </div>
+    <div class="prose">
+<p>An OmissionEvent is an event capturing an expression of agency realised by not carrying out an event that was expected of the agent in question – see Payton, J.D. (2018).  How to identify negative actions with positive events.  Australasian Journal of Philosophy, 96(1), pp. 87-101.</p>
+<p>Following Payton, we impose the constraint that the time of the omitted event is the same as the one associated with the omission event. That is, <br>OmissionEvent(?ev1) ^ :hasOmittedEvent(?ev1, ?ev2) ^ :hasTime(?ev1, ?t1) -&gt; :hasTime(?ev2, ?t1)<br>This is expressed by  means of a property chain specialising property :hasTime</p>    </div>
+    <pre class="frame Class"><span class="sec">Class:</span> <a class="t" href="#OmissionEvent" title="Omission event">nco:OmissionEvent</a>
+<span class="sec">SubClassOf:</span>
+    <a class="t" href="#NegativeEvent" title="Negative event">nco:NegativeEvent</a>
+     <span class="kw">and</span> (<a class="t" href="#hasOmittedEvent" title="has omitted event">nco:hasOmittedEvent</a> <span class="kw">only</span> <a class="t" href="#Event" title="Event">nco:Event</a>)
+     <span class="kw">and</span> (<a class="t" href="#hasOmittedEvent" title="has omitted event">nco:hasOmittedEvent</a> <span class="kw">exactly</span> 1 <a class="t" href="#Event" title="Event">nco:Event</a>)</pre>
+<p class="refs">Used in: <a href="#hasOmittedEvent">has omitted event</a></p>  </article>
+  <article class="term" id="Organization" data-term="organization organization">
+    <h3><a class="self" href="#Organization">Organization</a></h3>
+    <div class="iriline">
+      <span>http://data.open.ac.uk/ontology/newsclassification/v2#Organization</span>
+      <button type="button" data-copy="http://data.open.ac.uk/ontology/newsclassification/v2#Organization">Copy IRI</button>
+    </div>
+    <div class="prose">
+    </div>
+    <pre class="frame Class"><span class="sec">Class:</span> <a class="t" href="#Organization" title="Organization">nco:Organization</a>
+<span class="sec">SubClassOf:</span>
+    <a class="t" href="#PersonOrOganization" title="PersonOrOganization">nco:PersonOrOganization</a></pre>
+<p class="refs">Used in: <a href="#PersonOrOganization">PersonOrOganization</a>, <a href="#Publisher">Publisher</a></p>  </article>
+  <article class="term" id="Person" data-term="person person">
+    <h3><a class="self" href="#Person">Person</a></h3>
+    <div class="iriline">
+      <span>http://data.open.ac.uk/ontology/newsclassification/v2#Person</span>
+      <button type="button" data-copy="http://data.open.ac.uk/ontology/newsclassification/v2#Person">Copy IRI</button>
+    </div>
+    <div class="prose">
+    </div>
+    <pre class="frame Class"><span class="sec">Class:</span> <a class="t" href="#Person" title="Person">nco:Person</a>
+<span class="sec">SubClassOf:</span>
+    <a class="t" href="#PersonOrOganization" title="PersonOrOganization">nco:PersonOrOganization</a></pre>
+<p class="refs">Used in: <a href="#PersonOrOganization">PersonOrOganization</a>, <a href="#Publisher">Publisher</a></p>  </article>
+  <article class="term" id="PersonOrOganization" data-term="personoroganization personoroganization">
+    <h3><a class="self" href="#PersonOrOganization">PersonOrOganization</a></h3>
+    <div class="iriline">
+      <span>http://data.open.ac.uk/ontology/newsclassification/v2#PersonOrOganization</span>
+      <button type="button" data-copy="http://data.open.ac.uk/ontology/newsclassification/v2#PersonOrOganization">Copy IRI</button>
+    </div>
+    <div class="prose">
+    </div>
+    <pre class="frame Class"><span class="sec">Class:</span> <a class="t" href="#PersonOrOganization" title="PersonOrOganization">nco:PersonOrOganization</a>
+<span class="sec">EquivalentTo:</span>
+    <a class="t" href="#Organization" title="Organization">nco:Organization</a> <span class="kw">or</span> <a class="t" href="#Person" title="Person">nco:Person</a>
+<span class="sec">SubClassOf:</span>
+    <a class="t" href="#Agent" title="Agent">nco:Agent</a></pre>
+<p class="refs">Used in: <a href="#Organization">Organization</a>, <a href="#Person">Person</a>, <a href="#Publisher">Publisher</a></p>  </article>
+  <article class="term" id="Predicate" data-term="predicate predicate">
+    <h3><a class="self" href="#Predicate">Predicate</a></h3>
+    <div class="iriline">
+      <span>http://data.open.ac.uk/ontology/newsclassification/v2#Predicate</span>
+      <button type="button" data-copy="http://data.open.ac.uk/ontology/newsclassification/v2#Predicate">Copy IRI</button>
+    </div>
+    <div class="prose">
+<p>This is a metaclass whose instances play the role of a predicate in reified triples.  It is needed because OWL does not allow object properties to be used directly as values in triples unless an individual with the same name has been defined</p>    </div>
+    <pre class="frame Class"><span class="sec">Class:</span> <a class="t" href="#Predicate" title="Predicate">nco:Predicate</a></pre>
+<p class="refs">Used in: <a href="#hasTopic-individual">hasTopic</a>, <a href="#predicate">predicate</a></p>  </article>
+  <article class="term" id="PredictionEvent" data-term="predicted event predictionevent">
+    <h3><a class="self" href="#PredictionEvent">Predicted event</a></h3>
+    <div class="iriline">
+      <span>http://data.open.ac.uk/ontology/newsclassification/v2#PredictionEvent</span>
+      <button type="button" data-copy="http://data.open.ac.uk/ontology/newsclassification/v2#PredictionEvent">Copy IRI</button>
+    </div>
+    <div class="prose">
+<p>We impose the constraint that the time of the predicted event has to be after that associated with the prediction event. That is:</p>
+<p>PredictionEvent(?ev1) &amp; hasPrediction (?ev1 ?ev_or_sit) &amp; :hasTime (?ev1 ?t1) &amp; :hasTime (?ev_or_sit ?t2) --&gt; time:intervalBefore (?t1 ?t2)</p>
+<p>This constraint is expressed through a property chain specialising time:intervalBefore</p>    </div>
+    <pre class="frame Class"><span class="sec">Class:</span> <a class="t" href="#PredictionEvent" title="Predicted event">nco:PredictionEvent</a>
+<span class="sec">SubClassOf:</span>
+    <a class="t" href="#Event" title="Event">nco:Event</a>,
+    <a class="t" href="#hasPrediction" title="hasPrediction">nco:hasPrediction</a> <span class="kw">only</span> <a class="t" href="#EventOrSituation" title="EventOrSituation">nco:EventOrSituation</a>,
+    <a class="t" href="#hasPrediction" title="hasPrediction">nco:hasPrediction</a> <span class="kw">exactly</span> 1 <a class="t" href="#EventOrSituation" title="EventOrSituation">nco:EventOrSituation</a></pre>
+<p class="refs">Used in: <a href="#hasPrediction">hasPrediction</a></p>  </article>
+  <article class="term" id="Publisher" data-term="publisher publisher">
+    <h3><a class="self" href="#Publisher">Publisher</a></h3>
+    <div class="iriline">
+      <span>http://data.open.ac.uk/ontology/newsclassification/v2#Publisher</span>
+      <button type="button" data-copy="http://data.open.ac.uk/ontology/newsclassification/v2#Publisher">Copy IRI</button>
+    </div>
+    <div class="prose">
+    </div>
+    <pre class="frame Class"><span class="sec">Class:</span> <a class="t" href="#Publisher" title="Publisher">nco:Publisher</a>
+<span class="sec">SubClassOf:</span>
+    <a class="t" href="#PersonOrOganization" title="PersonOrOganization">nco:PersonOrOganization</a>,
+    <a class="t" href="#Organization" title="Organization">nco:Organization</a> <span class="kw">or</span> <a class="t" href="#Person" title="Person">nco:Person</a></pre>
+<p class="refs">Used in: <a href="#hasPublisher">hasPublisher</a>, <a href="#NewsSource">NewsSource</a></p>  </article>
+  <article class="term" id="Situation" data-term="situation situation">
+    <h3><a class="self" href="#Situation">Situation</a></h3>
+    <div class="iriline">
+      <span>http://data.open.ac.uk/ontology/newsclassification/v2#Situation</span>
+      <button type="button" data-copy="http://data.open.ac.uk/ontology/newsclassification/v2#Situation">Copy IRI</button>
+    </div>
+    <div class="prose">
+<p>A Situation is a collection of statements</p>    </div>
+    <pre class="frame Class"><span class="sec">Class:</span> <a class="t" href="#Situation" title="Situation">nco:Situation</a>
+<span class="sec">SubClassOf:</span>
+    <a class="t" href="#Collection" title="Collection">nco:Collection</a>,
+    <a class="t" href="#EventOrSituation" title="EventOrSituation">nco:EventOrSituation</a>,
+    <a class="t" href="#characterisedBy" title="characterised by">nco:characterisedBy</a> <span class="kw">only</span> <a class="t" href="#Description" title="Description">nco:Description</a>,
+    <a class="t" href="#hasElement" title="has element">nco:hasElement</a> <span class="kw">only</span> <a class="t" href="#Statement" title="Statement">nco:Statement</a>,
+    <a class="t" href="#hasElement" title="has element">nco:hasElement</a> <span class="kw">min</span> 1 <a class="t" href="#Statement" title="Statement">nco:Statement</a></pre>
+<div class="prose note"><b>See also.</b> <p>dul:Situation</p></div><p class="refs">Used in: <a href="#characterises">characterises</a>, <a href="#Collection">Collection</a>, <a href="#Description">Description</a>, <a href="#EventOrSituation">EventOrSituation</a></p>  </article>
+  <article class="term" id="Statement" data-term="statement statement">
+    <h3><a class="self" href="#Statement">Statement</a></h3>
+    <div class="iriline">
+      <span>http://data.open.ac.uk/ontology/newsclassification/v2#Statement</span>
+      <button type="button" data-copy="http://data.open.ac.uk/ontology/newsclassification/v2#Statement">Copy IRI</button>
+    </div>
+    <div class="prose">
+<p>A member of this class is an individual that reifies a triple.</p>    </div>
+    <pre class="frame Class"><span class="sec">Class:</span> <a class="t" href="#Statement" title="Statement">nco:Statement</a></pre>
+<p class="refs">Used in: <a href="#Claim">Claim</a>, <a href="#Description">Description</a>, <a href="#general-axioms">General axioms</a>, <a href="#object">object</a>, <a href="#predicate">predicate</a>, <a href="#Situation">Situation</a>, <a href="#subject">subject</a></p>  </article>
+  <article class="term" id="Text" data-term="text text">
+    <h3><a class="self" href="#Text">Text</a></h3>
+    <div class="iriline">
+      <span>http://data.open.ac.uk/ontology/newsclassification/v2#Text</span>
+      <button type="button" data-copy="http://data.open.ac.uk/ontology/newsclassification/v2#Text">Copy IRI</button>
+    </div>
+    <div class="prose">
+    </div>
+    <pre class="frame Class"><span class="sec">Class:</span> <a class="t" href="#Text" title="Text">nco:Text</a>
+<span class="sec">SubClassOf:</span>
+    <a class="t" href="#DataType" title="DataType">nco:DataType</a></pre>
+  </article>
+  <article class="term" id="Topic" data-term="topic topic">
+    <h3><a class="self" href="#Topic">Topic</a></h3>
+    <div class="iriline">
+      <span>http://data.open.ac.uk/ontology/newsclassification/v2#Topic</span>
+      <button type="button" data-copy="http://data.open.ac.uk/ontology/newsclassification/v2#Topic">Copy IRI</button>
+    </div>
+    <div class="prose">
+<p>A Topic provides the main focus of a news item. A Topic can be an Entity, an Event (or a Collection of Events), a Viewpoint, a Situation or a Categorical Topic</p>    </div>
+    <pre class="frame Class"><span class="sec">Class:</span> <a class="t" href="#Topic" title="Topic">nco:Topic</a>
+<span class="sec">SubClassOf:</span>
+    <a class="x" href="http://www.w3.org/2004/02/skos/core#Concept" title="http://www.w3.org/2004/02/skos/core#Concept">skos:Concept</a>,
+    <a class="t" href="#topicRoleOf" title="is topic role of">nco:topicRoleOf</a> <span class="kw">some</span> <a class="x" href="http://www.w3.org/2002/07/owl#Thing" title="http://www.w3.org/2002/07/owl#Thing">owl:Thing</a>,
+    <a class="t" href="#topicRoleOf" title="is topic role of">nco:topicRoleOf</a> <span class="kw">exactly</span> 1 <a class="x" href="http://www.w3.org/2002/07/owl#Thing" title="http://www.w3.org/2002/07/owl#Thing">owl:Thing</a></pre>
+<p class="refs">Used in: <a href="#CategoricalTopic">CategoricalTopic</a>, <a href="#Claim">Claim</a>, <a href="#concernsTopic">concerns topic</a>, <a href="#hasSubTopic">has subtopic</a>, <a href="#hasTopic">hasTopic</a>, <a href="#topicRoleOf">is topic role of</a>, <a href="#subTopicOf">subtopic of</a>, <a href="#topicInNewsItem">topicInNewsItem</a>, <a href="#topicRole">topicRole</a></p>  </article>
+  <article class="term" id="UnifyingFactor" data-term="unifying factor unifyingfactor">
+    <h3><a class="self" href="#UnifyingFactor">Unifying factor</a></h3>
+    <div class="iriline">
+      <span>http://data.open.ac.uk/ontology/newsclassification/v2#UnifyingFactor</span>
+      <button type="button" data-copy="http://data.open.ac.uk/ontology/newsclassification/v2#UnifyingFactor">Copy IRI</button>
+    </div>
+    <div class="prose">
+    </div>
+    <pre class="frame Class"><span class="sec">Class:</span> <a class="t" href="#UnifyingFactor" title="Unifying factor">nco:UnifyingFactor</a></pre>
+<p class="refs">Used in: <a href="#Collection">Collection</a>, <a href="#general-axioms">General axioms</a>, <a href="#hasUnifyingFactor">has unifying factor</a>, <a href="#satisfiesUf">satisfies</a></p>  </article>
+  <article class="term" id="Utterance" data-term="utterance utterance">
+    <h3><a class="self" href="#Utterance">Utterance</a></h3>
+    <div class="iriline">
+      <span>http://data.open.ac.uk/ontology/newsclassification/v2#Utterance</span>
+      <button type="button" data-copy="http://data.open.ac.uk/ontology/newsclassification/v2#Utterance">Copy IRI</button>
+    </div>
+    <div class="prose">
+    </div>
+    <pre class="frame Class"><span class="sec">Class:</span> <a class="t" href="#Utterance" title="Utterance">nco:Utterance</a>
+<span class="sec">SubClassOf:</span>
+    <a class="t" href="#hasUtteranceType" title="hasUtteranceType">nco:hasUtteranceType</a> <span class="kw">exactly</span> 1 <a class="t" href="#UtteranceType" title="UtteranceType">nco:UtteranceType</a>,
+    <a class="t" href="#hasText" title="hasText">nco:hasText</a> <span class="kw">exactly</span> 1 <a class="x" href="http://www.w3.org/2001/XMLSchema#string" title="http://www.w3.org/2001/XMLSchema#string">xsd:string</a>,
+    <a class="t" href="#hasTextContext" title="hasTextContext">nco:hasTextContext</a> <span class="kw">exactly</span> 1 <a class="x" href="http://www.w3.org/2001/XMLSchema#string" title="http://www.w3.org/2001/XMLSchema#string">xsd:string</a></pre>
+<p class="refs">Used in: <a href="#Claim">Claim</a>, <a href="#hasUtterance">hasUtterance</a></p>  </article>
+  <article class="term" id="UtteranceType" data-term="utterancetype utterancetype">
+    <h3><a class="self" href="#UtteranceType">UtteranceType</a></h3>
+    <div class="iriline">
+      <span>http://data.open.ac.uk/ontology/newsclassification/v2#UtteranceType</span>
+      <button type="button" data-copy="http://data.open.ac.uk/ontology/newsclassification/v2#UtteranceType">Copy IRI</button>
+    </div>
+    <div class="prose">
+    </div>
+    <pre class="frame Class"><span class="sec">Class:</span> <a class="t" href="#UtteranceType" title="UtteranceType">nco:UtteranceType</a></pre>
+<p class="refs">Used in: <a href="#directUtterance">directUtterance</a>, <a href="#indirectUtterance">indirectUtterance</a>, <a href="#partiallyDirectUtterance">partiallyDirectUtterance</a>, <a href="#Utterance">Utterance</a></p>  </article>
+  <article class="term" id="Viewpoint" data-term="viewpoint viewpoint">
+    <h3><a class="self" href="#Viewpoint">Viewpoint</a></h3>
+    <div class="iriline">
+      <span>http://data.open.ac.uk/ontology/newsclassification/v2#Viewpoint</span>
+      <button type="button" data-copy="http://data.open.ac.uk/ontology/newsclassification/v2#Viewpoint">Copy IRI</button>
+    </div>
+    <div class="prose">
+<p>As pointed out in (Baden and Springer, 2017), when analysing the news discourse, we are interested in identifying viewpoints that “open up different perspectives” and “construct different meaning”. Hence, here we define a Viewpoint as a collection of claims that subscribe to the same perspective</p>    </div>
+    <pre class="frame Class"><span class="sec">Class:</span> <a class="t" href="#Viewpoint" title="Viewpoint">nco:Viewpoint</a>
+<span class="sec">SubClassOf:</span>
+    <a class="t" href="#Collection" title="Collection">nco:Collection</a>,
+    (<a class="t" href="#hasElement" title="has element">nco:hasElement</a> <span class="kw">only</span> <a class="t" href="#Claim" title="Claim">nco:Claim</a>)
+     <span class="kw">and</span> (<a class="t" href="#hasElement" title="has element">nco:hasElement</a> <span class="kw">min</span> 1 <a class="t" href="#Claim" title="Claim">nco:Claim</a>)</pre>
+<p class="refs">Used in: <a href="#Collection">Collection</a>, <a href="#hasViewpoint">hasViewpoint</a>, <a href="#includesClaim">includesClaim</a>, <a href="#viewpointInNewsItem">viewpointInNewsItem</a></p>  </article>
+</section>
+<section id="objectproperty-index">
+  <h2><span class="n">4</span>Object properties</h2>
+  <article class="term" id="characterisedBy" data-term="characterised by characterisedby">
+    <h3><a class="self" href="#characterisedBy">characterised by</a></h3>
+    <div class="iriline">
+      <span>http://data.open.ac.uk/ontology/newsclassification/v2#characterisedBy</span>
+      <button type="button" data-copy="http://data.open.ac.uk/ontology/newsclassification/v2#characterisedBy">Copy IRI</button>
+    </div>
+    <div class="prose">
+    </div>
+    <pre class="frame ObjectProperty"><span class="sec">ObjectProperty:</span> <a class="t" href="#characterisedBy" title="characterised by">nco:characterisedBy</a>
+<span class="sec">InverseOf:</span>
+    <a class="t" href="#characterises" title="characterises">nco:characterises</a></pre>
+<p class="refs">Used in: <a href="#characterises">characterises</a>, <a href="#Situation">Situation</a></p>  </article>
+  <article class="term" id="characterises" data-term="characterises characterises">
+    <h3><a class="self" href="#characterises">characterises</a></h3>
+    <div class="iriline">
+      <span>http://data.open.ac.uk/ontology/newsclassification/v2#characterises</span>
+      <button type="button" data-copy="http://data.open.ac.uk/ontology/newsclassification/v2#characterises">Copy IRI</button>
+    </div>
+    <div class="prose">
+<p>This is the main relation linking descriptions to situations. A description provides an interpretation of a situation.</p>    </div>
+    <pre class="frame ObjectProperty"><span class="sec">ObjectProperty:</span> <a class="t" href="#characterises" title="characterises">nco:characterises</a>
+<span class="sec">Domain:</span>
+    <a class="t" href="#Description" title="Description">nco:Description</a>
+<span class="sec">Range:</span>
+    <a class="t" href="#Situation" title="Situation">nco:Situation</a>
+<span class="sec">InverseOf:</span>
+    <a class="t" href="#characterisedBy" title="characterised by">nco:characterisedBy</a></pre>
+<p class="refs">Used in: <a href="#characterisedBy">characterised by</a>, <a href="#Description">Description</a></p>  </article>
+  <article class="term" id="claimInNewsItem" data-term="claiminnewsitem claiminnewsitem">
+    <h3><a class="self" href="#claimInNewsItem">claimInNewsItem</a></h3>
+    <div class="iriline">
+      <span>http://data.open.ac.uk/ontology/newsclassification/v2#claimInNewsItem</span>
+      <button type="button" data-copy="http://data.open.ac.uk/ontology/newsclassification/v2#claimInNewsItem">Copy IRI</button>
+    </div>
+    <div class="prose">
+    </div>
+    <pre class="frame ObjectProperty"><span class="sec">ObjectProperty:</span> <a class="t" href="#claimInNewsItem" title="claimInNewsItem">nco:claimInNewsItem</a>
+<span class="sec">SubPropertyOf:</span>
+    <a class="t" href="#inNewsItem" title="in news item">nco:inNewsItem</a>
+<span class="sec">Domain:</span>
+    <a class="t" href="#Claim" title="Claim">nco:Claim</a>
+<span class="sec">Range:</span>
+    <a class="t" href="#NewsItem" title="News item">nco:NewsItem</a>
+<span class="sec">InverseOf:</span>
+    <a class="t" href="#hasClaim" title="has claim">nco:hasClaim</a></pre>
+<p class="refs">Used in: <a href="#Claim">Claim</a>, <a href="#hasClaim">has claim</a></p>  </article>
+  <article class="term" id="concernsTopic" data-term="concerns topic concernstopic">
+    <h3><a class="self" href="#concernsTopic">concerns topic</a></h3>
+    <div class="iriline">
+      <span>http://data.open.ac.uk/ontology/newsclassification/v2#concernsTopic</span>
+      <button type="button" data-copy="http://data.open.ac.uk/ontology/newsclassification/v2#concernsTopic">Copy IRI</button>
+    </div>
+    <div class="prose">
+<p>A claim is something that concerns a topic.  The property concernsTopic is used to express this relation</p>    </div>
+    <pre class="frame ObjectProperty"><span class="sec">ObjectProperty:</span> <a class="t" href="#concernsTopic" title="concerns topic">nco:concernsTopic</a>
+<span class="sec">Domain:</span>
+    <a class="t" href="#Claim" title="Claim">nco:Claim</a>
+<span class="sec">Range:</span>
+    <a class="t" href="#Topic" title="Topic">nco:Topic</a></pre>
+<p class="refs">Used in: <a href="#Claim">Claim</a></p>  </article>
+  <article class="term" id="dependsOn" data-term="depends on dependson">
+    <h3><a class="self" href="#dependsOn">depends on</a></h3>
+    <div class="iriline">
+      <span>http://data.open.ac.uk/ontology/newsclassification/v2#dependsOn</span>
+      <button type="button" data-copy="http://data.open.ac.uk/ontology/newsclassification/v2#dependsOn">Copy IRI</button>
+    </div>
+    <div class="prose">
+    </div>
+    <pre class="frame ObjectProperty"><span class="sec">ObjectProperty:</span> <a class="t" href="#dependsOn" title="depends on">nco:dependsOn</a>
+<span class="sec">Characteristics:</span>
+    Transitive
+<span class="sec">Domain:</span>
+    <a class="t" href="#EventOrSituation" title="EventOrSituation">nco:EventOrSituation</a>
+<span class="sec">Range:</span>
+    <a class="t" href="#EventOrSituation" title="EventOrSituation">nco:EventOrSituation</a>
+<span class="sec">InverseOf:</span>
+    <a class="t" href="#preconditionFor" title="precondition for">nco:preconditionFor</a></pre>
+<p class="refs">Used in: <a href="#eventDependsOn">event depends on</a>, <a href="#preconditionFor">precondition for</a></p>  </article>
+  <article class="term" id="eventDependsOn" data-term="event depends on eventdependson">
+    <h3><a class="self" href="#eventDependsOn">event depends on</a></h3>
+    <div class="iriline">
+      <span>http://data.open.ac.uk/ontology/newsclassification/v2#eventDependsOn</span>
+      <button type="button" data-copy="http://data.open.ac.uk/ontology/newsclassification/v2#eventDependsOn">Copy IRI</button>
+    </div>
+    <div class="prose">
+<p>range is {Event OR Situation}</p>    </div>
+    <pre class="frame ObjectProperty"><span class="sec">ObjectProperty:</span> <a class="t" href="#eventDependsOn" title="event depends on">nco:eventDependsOn</a>
+<span class="sec">SubPropertyOf:</span>
+    <a class="t" href="#dependsOn" title="depends on">nco:dependsOn</a>
+<span class="sec">Domain:</span>
+    <a class="t" href="#Event" title="Event">nco:Event</a>
+<span class="sec">Range:</span>
+    <a class="t" href="#EventOrSituation" title="EventOrSituation">nco:EventOrSituation</a>
+<span class="sec">InverseOf:</span>
+    <a class="t" href="#preconditionForEvent" title="precondition for event">nco:preconditionForEvent</a></pre>
+<p class="refs">Used in: <a href="#subEventOf">is subevent of</a>, <a href="#preconditionForEvent">precondition for event</a></p>  </article>
+  <article class="term" id="hasAgent" data-term="has agent hasagent">
+    <h3><a class="self" href="#hasAgent">has agent</a></h3>
+    <div class="iriline">
+      <span>http://data.open.ac.uk/ontology/newsclassification/v2#hasAgent</span>
+      <button type="button" data-copy="http://data.open.ac.uk/ontology/newsclassification/v2#hasAgent">Copy IRI</button>
+    </div>
+    <div class="prose">
+    </div>
+    <pre class="frame ObjectProperty"><span class="sec">ObjectProperty:</span> <a class="t" href="#hasAgent" title="has agent">nco:hasAgent</a>
+<span class="sec">Domain:</span>
+    <a class="t" href="#AgentComponent" title="Agent component">nco:AgentComponent</a>
+<span class="sec">Range:</span>
+    <a class="t" href="#Agent" title="Agent">nco:Agent</a></pre>
+<p class="refs">Used in: <a href="#AgentComponent">Agent component</a></p>  </article>
+  <article class="term" id="hasAgentComponent" data-term="has agent component hasagentcomponent">
+    <h3><a class="self" href="#hasAgentComponent">has agent component</a></h3>
+    <div class="iriline">
+      <span>http://data.open.ac.uk/ontology/newsclassification/v2#hasAgentComponent</span>
+      <button type="button" data-copy="http://data.open.ac.uk/ontology/newsclassification/v2#hasAgentComponent">Copy IRI</button>
+    </div>
+    <div class="prose">
+    </div>
+    <pre class="frame ObjectProperty"><span class="sec">ObjectProperty:</span> <a class="t" href="#hasAgentComponent" title="has agent component">nco:hasAgentComponent</a>
+<span class="sec">Domain:</span>
+    <a class="t" href="#Claim" title="Claim">nco:Claim</a> <span class="kw">or</span> <a class="t" href="#Event" title="Event">nco:Event</a>
+<span class="sec">Range:</span>
+    <a class="t" href="#AgentComponent" title="Agent component">nco:AgentComponent</a></pre>
+<p class="refs">Used in: <a href="#Claim">Claim</a>, <a href="#Event">Event</a></p>  </article>
+  <article class="term" id="hasAgentRole" data-term="has agent role hasagentrole">
+    <h3><a class="self" href="#hasAgentRole">has agent role</a></h3>
+    <div class="iriline">
+      <span>http://data.open.ac.uk/ontology/newsclassification/v2#hasAgentRole</span>
+      <button type="button" data-copy="http://data.open.ac.uk/ontology/newsclassification/v2#hasAgentRole">Copy IRI</button>
+    </div>
+    <div class="prose">
+    </div>
+    <pre class="frame ObjectProperty"><span class="sec">ObjectProperty:</span> <a class="t" href="#hasAgentRole" title="has agent role">nco:hasAgentRole</a>
+<span class="sec">Domain:</span>
+    <a class="t" href="#AgentComponent" title="Agent component">nco:AgentComponent</a>
+<span class="sec">Range:</span>
+    <a class="t" href="#AgentRole" title="Agent role">nco:AgentRole</a></pre>
+<p class="refs">Used in: <a href="#AgentComponent">Agent component</a></p>  </article>
+  <article class="term" id="hasAspect" data-term="has aspect hasaspect">
+    <h3><a class="self" href="#hasAspect">has aspect</a></h3>
+    <div class="iriline">
+      <span>http://data.open.ac.uk/ontology/newsclassification/v2#hasAspect</span>
+      <button type="button" data-copy="http://data.open.ac.uk/ontology/newsclassification/v2#hasAspect">Copy IRI</button>
+    </div>
+    <div class="prose">
+<p>Connects an entity to its aspects - e.g., the financial status of an individual</p>    </div>
+    <pre class="frame ObjectProperty"><span class="sec">ObjectProperty:</span> <a class="t" href="#hasAspect" title="has aspect">nco:hasAspect</a>
+<span class="sec">Domain:</span>
+    <a class="t" href="#Entity" title="Entity">nco:Entity</a>
+<span class="sec">Range:</span>
+    <a class="t" href="#Aspect" title="Aspect">nco:Aspect</a>
+<span class="sec">InverseOf:</span>
+    <a class="t" href="#isAspectOf" title="is aspect of">nco:isAspectOf</a></pre>
+<p class="refs">Used in: <a href="#isAspectOf">is aspect of</a></p>  </article>
+  <article class="term" id="hasClaim" data-term="has claim hasclaim">
+    <h3><a class="self" href="#hasClaim">has claim</a></h3>
+    <div class="iriline">
+      <span>http://data.open.ac.uk/ontology/newsclassification/v2#hasClaim</span>
+      <button type="button" data-copy="http://data.open.ac.uk/ontology/newsclassification/v2#hasClaim">Copy IRI</button>
+    </div>
+    <div class="prose">
+<p>Captures the relation between a news item and a claim expressed by an agent, which is reported in the news item in question</p>    </div>
+    <pre class="frame ObjectProperty"><span class="sec">ObjectProperty:</span> <a class="t" href="#hasClaim" title="has claim">nco:hasClaim</a>
+<span class="sec">Domain:</span>
+    <a class="t" href="#NewsItem" title="News item">nco:NewsItem</a>
+<span class="sec">Range:</span>
+    <a class="t" href="#Claim" title="Claim">nco:Claim</a>
+<span class="sec">InverseOf:</span>
+    <a class="t" href="#claimInNewsItem" title="claimInNewsItem">nco:claimInNewsItem</a></pre>
+<p class="refs">Used in: <a href="#claimInNewsItem">claimInNewsItem</a>, <a href="#hasViewpoint">hasViewpoint</a></p>  </article>
+  <article class="term" id="hasElement" data-term="has element haselement">
+    <h3><a class="self" href="#hasElement">has element</a></h3>
+    <div class="iriline">
+      <span>http://data.open.ac.uk/ontology/newsclassification/v2#hasElement</span>
+      <button type="button" data-copy="http://data.open.ac.uk/ontology/newsclassification/v2#hasElement">Copy IRI</button>
+    </div>
+    <div class="prose">
+    </div>
+    <pre class="frame ObjectProperty"><span class="sec">ObjectProperty:</span> <a class="t" href="#hasElement" title="has element">nco:hasElement</a>
+<span class="sec">SubPropertyChain:</span>
+    <a class="t" href="#hasUnifyingFactor" title="has unifying factor">nco:hasUnifyingFactor</a> <span class="kw">o</span> <a class="t" href="#ufSatisfiedBy" title="satisfied by">nco:ufSatisfiedBy</a>
+<span class="sec">Domain:</span>
+    <a class="t" href="#Collection" title="Collection">nco:Collection</a>
+<span class="sec">Range:</span>
+    <a class="x" href="http://www.w3.org/2002/07/owl#Thing" title="http://www.w3.org/2002/07/owl#Thing">owl:Thing</a>
+<span class="sec">InverseOf:</span>
+    <a class="t" href="#isElementOf" title="is element of">nco:isElementOf</a></pre>
+<p class="refs">Used in: <a href="#CollectionOfEvents">Collection of events</a>, <a href="#Description">Description</a>, <a href="#includesClaim">includesClaim</a>, <a href="#isElementOf">is element of</a>, <a href="#Situation">Situation</a>, <a href="#Viewpoint">Viewpoint</a></p>  </article>
+  <article class="term" id="hasJustification" data-term="has justification hasjustification">
+    <h3><a class="self" href="#hasJustification">has justification</a></h3>
+    <div class="iriline">
+      <span>http://data.open.ac.uk/ontology/newsclassification/v2#hasJustification</span>
+      <button type="button" data-copy="http://data.open.ac.uk/ontology/newsclassification/v2#hasJustification">Copy IRI</button>
+    </div>
+    <div class="prose">
+    </div>
+    <pre class="frame ObjectProperty"><span class="sec">ObjectProperty:</span> <a class="t" href="#hasJustification" title="has justification">nco:hasJustification</a>
+<span class="sec">Domain:</span>
+    <a class="t" href="#Claim" title="Claim">nco:Claim</a>
+<span class="sec">Range:</span>
+    <a class="t" href="#Justification" title="Justification">nco:Justification</a>
+<span class="sec">InverseOf:</span>
+    <a class="t" href="#isJustificationOf" title="isJustificationOf">nco:isJustificationOf</a></pre>
+<p class="refs">Used in: <a href="#Claim">Claim</a>, <a href="#isJustificationOf">isJustificationOf</a></p>  </article>
+  <article class="term" id="hasLocation" data-term="has location haslocation">
+    <h3><a class="self" href="#hasLocation">has location</a></h3>
+    <div class="iriline">
+      <span>http://data.open.ac.uk/ontology/newsclassification/v2#hasLocation</span>
+      <button type="button" data-copy="http://data.open.ac.uk/ontology/newsclassification/v2#hasLocation">Copy IRI</button>
+    </div>
+    <div class="prose">
+    </div>
+    <pre class="frame ObjectProperty"><span class="sec">ObjectProperty:</span> <a class="t" href="#hasLocation" title="has location">nco:hasLocation</a>
+<span class="sec">Domain:</span>
+    <a class="t" href="#Event" title="Event">nco:Event</a>
+<span class="sec">Range:</span>
+    <a class="t" href="#Location" title="Location">nco:Location</a></pre>
+<p class="refs">Used in: <a href="#Event">Event</a></p>  </article>
+  <article class="term" id="hasOmittedEvent" data-term="has omitted event hasomittedevent">
+    <h3><a class="self" href="#hasOmittedEvent">has omitted event</a></h3>
+    <div class="iriline">
+      <span>http://data.open.ac.uk/ontology/newsclassification/v2#hasOmittedEvent</span>
+      <button type="button" data-copy="http://data.open.ac.uk/ontology/newsclassification/v2#hasOmittedEvent">Copy IRI</button>
+    </div>
+    <div class="prose">
+<p>captures the relation between an OmissionEvent and the event that has not been carried out - e.g., a soldier&#x27;s failure to carry out an order</p>    </div>
+    <pre class="frame ObjectProperty"><span class="sec">ObjectProperty:</span> <a class="t" href="#hasOmittedEvent" title="has omitted event">nco:hasOmittedEvent</a>
+<span class="sec">Domain:</span>
+    <a class="t" href="#OmissionEvent" title="Omission event">nco:OmissionEvent</a>
+<span class="sec">Range:</span>
+    <a class="t" href="#Event" title="Event">nco:Event</a>
+<span class="sec">InverseOf:</span>
+    <a class="t" href="#isOmittedEventOf" title="isOmittedEventOf">nco:isOmittedEventOf</a></pre>
+<p class="refs">Used in: <a href="#isOmittedEventOf">isOmittedEventOf</a>, <a href="#OmissionEvent">Omission event</a></p>  </article>
+  <article class="term" id="hasSubEvent" data-term="has subevent hassubevent">
+    <h3><a class="self" href="#hasSubEvent">has subevent</a></h3>
+    <div class="iriline">
+      <span>http://data.open.ac.uk/ontology/newsclassification/v2#hasSubEvent</span>
+      <button type="button" data-copy="http://data.open.ac.uk/ontology/newsclassification/v2#hasSubEvent">Copy IRI</button>
+    </div>
+    <div class="prose">
+    </div>
+    <pre class="frame ObjectProperty"><span class="sec">ObjectProperty:</span> <a class="t" href="#hasSubEvent" title="has subevent">nco:hasSubEvent</a>
+<span class="sec">SubPropertyOf:</span>
+    <a class="t" href="#preconditionForEvent" title="precondition for event">nco:preconditionForEvent</a>
+<span class="sec">Characteristics:</span>
+    Transitive
+<span class="sec">Domain:</span>
+    <a class="t" href="#Event" title="Event">nco:Event</a>
+<span class="sec">Range:</span>
+    <a class="t" href="#Event" title="Event">nco:Event</a>
+<span class="sec">InverseOf:</span>
+    <a class="t" href="#subEventOf" title="is subevent of">nco:subEventOf</a></pre>
+<p class="refs">Used in: <a href="#subEventOf">is subevent of</a></p>  </article>
+  <article class="term" id="hasSubTopic" data-term="has subtopic hassubtopic">
+    <h3><a class="self" href="#hasSubTopic">has subtopic</a></h3>
+    <div class="iriline">
+      <span>http://data.open.ac.uk/ontology/newsclassification/v2#hasSubTopic</span>
+      <button type="button" data-copy="http://data.open.ac.uk/ontology/newsclassification/v2#hasSubTopic">Copy IRI</button>
+    </div>
+    <div class="prose">
+<p>This property captures hierarchical relations between topics – e.g., as expressed in the IPTC NewsCodes taxonomy</p>    </div>
+    <pre class="frame ObjectProperty"><span class="sec">ObjectProperty:</span> <a class="t" href="#hasSubTopic" title="has subtopic">nco:hasSubTopic</a>
+<span class="sec">SubPropertyOf:</span>
+    <a class="x" href="http://www.w3.org/2004/02/skos/core#narrowerTransitive" title="http://www.w3.org/2004/02/skos/core#narrowerTransitive">skos:narrowerTransitive</a>
+<span class="sec">Characteristics:</span>
+    Transitive
+<span class="sec">Domain:</span>
+    <a class="t" href="#Topic" title="Topic">nco:Topic</a>
+<span class="sec">Range:</span>
+    <a class="t" href="#Topic" title="Topic">nco:Topic</a>
+<span class="sec">InverseOf:</span>
+    <a class="t" href="#subTopicOf" title="subtopic of">nco:subTopicOf</a></pre>
+<p class="refs">Used in: <a href="#subTopicOf">subtopic of</a></p>  </article>
+  <article class="term" id="hasTime" data-term="has time hastime">
+    <h3><a class="self" href="#hasTime">has time</a></h3>
+    <div class="iriline">
+      <span>http://data.open.ac.uk/ontology/newsclassification/v2#hasTime</span>
+      <button type="button" data-copy="http://data.open.ac.uk/ontology/newsclassification/v2#hasTime">Copy IRI</button>
+    </div>
+    <div class="prose">
+    </div>
+    <pre class="frame ObjectProperty"><span class="sec">ObjectProperty:</span> <a class="t" href="#hasTime" title="has time">nco:hasTime</a>
+<span class="sec">SubPropertyOf:</span>
+    <a class="x" href="http://www.w3.org/2006/time#hasTime" title="http://www.w3.org/2006/time#hasTime">time:hasTime</a>
+<span class="sec">SubPropertyChain:</span>
+    <a class="t" href="#isOmittedEventOf" title="isOmittedEventOf">nco:isOmittedEventOf</a> <span class="kw">o</span> <a class="t" href="#hasTime" title="has time">nco:hasTime</a>
+<span class="sec">Domain:</span>
+    <a class="t" href="#EventOrSituation" title="EventOrSituation">nco:EventOrSituation</a>
+<span class="sec">Range:</span>
+    <a class="x" href="http://www.w3.org/2006/time#TemporalEntity" title="http://www.w3.org/2006/time#TemporalEntity">time:TemporalEntity</a>
+<span class="sec">InverseOf:</span>
+    <a class="t" href="#isTimeOf" title="isTimeOf">nco:isTimeOf</a></pre>
+<p class="refs">Used in: <a href="#general-axioms">General axioms</a>, <a href="#isTimeOf">isTimeOf</a></p>  </article>
+  <article class="term" id="hasUnifyingFactor" data-term="has unifying factor hasunifyingfactor">
+    <h3><a class="self" href="#hasUnifyingFactor">has unifying factor</a></h3>
+    <div class="iriline">
+      <span>http://data.open.ac.uk/ontology/newsclassification/v2#hasUnifyingFactor</span>
+      <button type="button" data-copy="http://data.open.ac.uk/ontology/newsclassification/v2#hasUnifyingFactor">Copy IRI</button>
+    </div>
+    <div class="prose">
+<p>Relates a collection to the associated unifying factor</p>    </div>
+    <pre class="frame ObjectProperty"><span class="sec">ObjectProperty:</span> <a class="t" href="#hasUnifyingFactor" title="has unifying factor">nco:hasUnifyingFactor</a>
+<span class="sec">Domain:</span>
+    <a class="t" href="#Collection" title="Collection">nco:Collection</a>
+<span class="sec">Range:</span>
+    <a class="t" href="#UnifyingFactor" title="Unifying factor">nco:UnifyingFactor</a>
+<span class="sec">InverseOf:</span>
+    <a class="t" href="#isUnifyingFactorOf" title="is unifying factor of">nco:isUnifyingFactorOf</a></pre>
+<p class="refs">Used in: <a href="#Collection">Collection</a>, <a href="#hasElement">has element</a>, <a href="#isUnifyingFactorOf">is unifying factor of</a>, <a href="#satisfiesUf">satisfies</a></p>  </article>
+  <article class="term" id="hasNewsSource" data-term="hasnewssource hasnewssource">
+    <h3><a class="self" href="#hasNewsSource">hasNewsSource</a></h3>
+    <div class="iriline">
+      <span>http://data.open.ac.uk/ontology/newsclassification/v2#hasNewsSource</span>
+      <button type="button" data-copy="http://data.open.ac.uk/ontology/newsclassification/v2#hasNewsSource">Copy IRI</button>
+    </div>
+    <div class="prose">
+    </div>
+    <pre class="frame ObjectProperty"><span class="sec">ObjectProperty:</span> <a class="t" href="#hasNewsSource" title="hasNewsSource">nco:hasNewsSource</a>
+<span class="sec">SubPropertyOf:</span>
+    <a class="x" href="http://www.w3.org/2002/07/owl#topObjectProperty" title="http://www.w3.org/2002/07/owl#topObjectProperty">owl:topObjectProperty</a>
+<span class="sec">Domain:</span>
+    <a class="t" href="#NewsItem" title="News item">nco:NewsItem</a>
+<span class="sec">Range:</span>
+    <a class="t" href="#NewsSource" title="NewsSource">nco:NewsSource</a></pre>
+<p class="refs">Used in: <a href="#NewsItem">News item</a></p>  </article>
+  <article class="term" id="hasPrediction" data-term="hasprediction hasprediction">
+    <h3><a class="self" href="#hasPrediction">hasPrediction</a></h3>
+    <div class="iriline">
+      <span>http://data.open.ac.uk/ontology/newsclassification/v2#hasPrediction</span>
+      <button type="button" data-copy="http://data.open.ac.uk/ontology/newsclassification/v2#hasPrediction">Copy IRI</button>
+    </div>
+    <div class="prose">
+<p>captures the relation between a PredictionEvent and the event that has been predicted - forecasting an eruption</p>    </div>
+    <pre class="frame ObjectProperty"><span class="sec">ObjectProperty:</span> <a class="t" href="#hasPrediction" title="hasPrediction">nco:hasPrediction</a>
+<span class="sec">Domain:</span>
+    <a class="t" href="#PredictionEvent" title="Predicted event">nco:PredictionEvent</a>
+<span class="sec">Range:</span>
+    <a class="t" href="#EventOrSituation" title="EventOrSituation">nco:EventOrSituation</a></pre>
+<p class="refs">Used in: <a href="#general-axioms">General axioms</a>, <a href="#PredictionEvent">Predicted event</a></p>  </article>
+  <article class="term" id="hasPublisher" data-term="haspublisher haspublisher">
+    <h3><a class="self" href="#hasPublisher">hasPublisher</a></h3>
+    <div class="iriline">
+      <span>http://data.open.ac.uk/ontology/newsclassification/v2#hasPublisher</span>
+      <button type="button" data-copy="http://data.open.ac.uk/ontology/newsclassification/v2#hasPublisher">Copy IRI</button>
+    </div>
+    <div class="prose">
+    </div>
+    <pre class="frame ObjectProperty"><span class="sec">ObjectProperty:</span> <a class="t" href="#hasPublisher" title="hasPublisher">nco:hasPublisher</a>
+<span class="sec">Domain:</span>
+    <a class="t" href="#NewsSource" title="NewsSource">nco:NewsSource</a>
+<span class="sec">Range:</span>
+    <a class="t" href="#Publisher" title="Publisher">nco:Publisher</a></pre>
+<p class="refs">Used in: <a href="#NewsSource">NewsSource</a></p>  </article>
+  <article class="term" id="hasTopic" data-term="hastopic hastopic">
+    <h3><a class="self" href="#hasTopic">hasTopic</a></h3>
+    <div class="iriline">
+      <span>http://data.open.ac.uk/ontology/newsclassification/v2#hasTopic</span>
+      <button type="button" data-copy="http://data.open.ac.uk/ontology/newsclassification/v2#hasTopic">Copy IRI</button>
+    </div>
+    <div class="prose">
+<p>captures the relation between a news item and a topic, which is the focus of the news item in question</p>    </div>
+    <pre class="frame ObjectProperty"><span class="sec">ObjectProperty:</span> <a class="t" href="#hasTopic" title="hasTopic">nco:hasTopic</a>
+<span class="sec">SubPropertyChain:</span>
+    <a class="t" href="#hasTopic" title="hasTopic">nco:hasTopic</a> <span class="kw">o</span> <a class="t" href="#subTopicOf" title="subtopic of">nco:subTopicOf</a>
+<span class="sec">SubPropertyChain:</span>
+    <a class="t" href="#hasTopic" title="hasTopic">nco:hasTopic</a> <span class="kw">o</span> <a class="t" href="#topicRoleOf" title="is topic role of">nco:topicRoleOf</a> <span class="kw">o</span> <a class="t" href="#isAspectOf" title="is aspect of">nco:isAspectOf</a> <span class="kw">o</span> <a class="t" href="#topicRole" title="topicRole">nco:topicRole</a>
+<span class="sec">SubPropertyChain:</span>
+    <a class="t" href="#hasTopic" title="hasTopic">nco:hasTopic</a> <span class="kw">o</span> <a class="t" href="#topicRoleOf" title="is topic role of">nco:topicRoleOf</a> <span class="kw">o</span> <a class="t" href="#isClaimOf" title="is claim of">nco:isClaimOf</a> <span class="kw">o</span> <a class="t" href="#topicRole" title="topicRole">nco:topicRole</a>
+<span class="sec">SubPropertyChain:</span>
+    <a class="t" href="#hasTopic" title="hasTopic">nco:hasTopic</a> <span class="kw">o</span> <a class="t" href="#topicRoleOf" title="is topic role of">nco:topicRoleOf</a> <span class="kw">o</span> <a class="t" href="#object" title="object">nco:object</a> <span class="kw">o</span> <a class="t" href="#topicRole" title="topicRole">nco:topicRole</a>
+<span class="sec">SubPropertyChain:</span>
+    <a class="t" href="#hasTopic" title="hasTopic">nco:hasTopic</a> <span class="kw">o</span> <a class="t" href="#topicRoleOf" title="is topic role of">nco:topicRoleOf</a> <span class="kw">o</span> <a class="t" href="#predicate" title="predicate">nco:predicate</a> <span class="kw">o</span> <a class="t" href="#topicRole" title="topicRole">nco:topicRole</a>
+<span class="sec">SubPropertyChain:</span>
+    <a class="t" href="#hasTopic" title="hasTopic">nco:hasTopic</a> <span class="kw">o</span> <a class="t" href="#topicRoleOf" title="is topic role of">nco:topicRoleOf</a> <span class="kw">o</span> <a class="t" href="#subject" title="subject">nco:subject</a> <span class="kw">o</span> <a class="t" href="#topicRole" title="topicRole">nco:topicRole</a>
+<span class="sec">Domain:</span>
+    <a class="t" href="#NewsItem" title="News item">nco:NewsItem</a>
+<span class="sec">Range:</span>
+    <a class="t" href="#Topic" title="Topic">nco:Topic</a>
+<span class="sec">InverseOf:</span>
+    <a class="t" href="#topicInNewsItem" title="topicInNewsItem">nco:topicInNewsItem</a></pre>
+<p class="refs">Used in: <a href="#topicInNewsItem">topicInNewsItem</a></p>  </article>
+  <article class="term" id="hasUtterance" data-term="hasutterance hasutterance">
+    <h3><a class="self" href="#hasUtterance">hasUtterance</a></h3>
+    <div class="iriline">
+      <span>http://data.open.ac.uk/ontology/newsclassification/v2#hasUtterance</span>
+      <button type="button" data-copy="http://data.open.ac.uk/ontology/newsclassification/v2#hasUtterance">Copy IRI</button>
+    </div>
+    <div class="prose">
+    </div>
+    <pre class="frame ObjectProperty"><span class="sec">ObjectProperty:</span> <a class="t" href="#hasUtterance" title="hasUtterance">nco:hasUtterance</a>
+<span class="sec">Domain:</span>
+    <a class="t" href="#Claim" title="Claim">nco:Claim</a>
+<span class="sec">Range:</span>
+    <a class="t" href="#Utterance" title="Utterance">nco:Utterance</a></pre>
+<p class="refs">Used in: <a href="#Claim">Claim</a></p>  </article>
+  <article class="term" id="hasUtteranceType" data-term="hasutterancetype hasutterancetype">
+    <h3><a class="self" href="#hasUtteranceType">hasUtteranceType</a></h3>
+    <div class="iriline">
+      <span>http://data.open.ac.uk/ontology/newsclassification/v2#hasUtteranceType</span>
+      <button type="button" data-copy="http://data.open.ac.uk/ontology/newsclassification/v2#hasUtteranceType">Copy IRI</button>
+    </div>
+    <div class="prose">
+    </div>
+    <pre class="frame ObjectProperty"><span class="sec">ObjectProperty:</span> <a class="t" href="#hasUtteranceType" title="hasUtteranceType">nco:hasUtteranceType</a></pre>
+<p class="refs">Used in: <a href="#Utterance">Utterance</a></p>  </article>
+  <article class="term" id="hasViewpoint" data-term="hasviewpoint hasviewpoint">
+    <h3><a class="self" href="#hasViewpoint">hasViewpoint</a></h3>
+    <div class="iriline">
+      <span>http://data.open.ac.uk/ontology/newsclassification/v2#hasViewpoint</span>
+      <button type="button" data-copy="http://data.open.ac.uk/ontology/newsclassification/v2#hasViewpoint">Copy IRI</button>
+    </div>
+    <div class="prose">
+<p>Relates a news item to a viewpoint, say ?v, expressed in the news item in question. Normally this relation is not asserted but inferred on the basis of a claim, say ?c, appearing in the news item, where ?c is an element of ?v</p>    </div>
+    <pre class="frame ObjectProperty"><span class="sec">ObjectProperty:</span> <a class="t" href="#hasViewpoint" title="hasViewpoint">nco:hasViewpoint</a>
+<span class="sec">SubPropertyChain:</span>
+    <a class="t" href="#hasClaim" title="has claim">nco:hasClaim</a> <span class="kw">o</span> <a class="t" href="#isClaimOf" title="is claim of">nco:isClaimOf</a>
+<span class="sec">Domain:</span>
+    <a class="t" href="#NewsItem" title="News item">nco:NewsItem</a>
+<span class="sec">Range:</span>
+    <a class="t" href="#Viewpoint" title="Viewpoint">nco:Viewpoint</a>
+<span class="sec">InverseOf:</span>
+    <a class="t" href="#viewpointInNewsItem" title="viewpointInNewsItem">nco:viewpointInNewsItem</a></pre>
+<p class="refs">Used in: <a href="#viewpointInNewsItem">viewpointInNewsItem</a></p>  </article>
+  <article class="term" id="inNewsItem" data-term="in news item innewsitem">
+    <h3><a class="self" href="#inNewsItem">in news item</a></h3>
+    <div class="iriline">
+      <span>http://data.open.ac.uk/ontology/newsclassification/v2#inNewsItem</span>
+      <button type="button" data-copy="http://data.open.ac.uk/ontology/newsclassification/v2#inNewsItem">Copy IRI</button>
+    </div>
+    <div class="prose">
+    </div>
+    <pre class="frame ObjectProperty"><span class="sec">ObjectProperty:</span> <a class="t" href="#inNewsItem" title="in news item">nco:inNewsItem</a></pre>
+<p class="refs">Used in: <a href="#claimInNewsItem">claimInNewsItem</a>, <a href="#topicInNewsItem">topicInNewsItem</a>, <a href="#viewpointInNewsItem">viewpointInNewsItem</a></p>  </article>
+  <article class="term" id="includesClaim" data-term="includesclaim includesclaim">
+    <h3><a class="self" href="#includesClaim">includesClaim</a></h3>
+    <div class="iriline">
+      <span>http://data.open.ac.uk/ontology/newsclassification/v2#includesClaim</span>
+      <button type="button" data-copy="http://data.open.ac.uk/ontology/newsclassification/v2#includesClaim">Copy IRI</button>
+    </div>
+    <div class="prose">
+<p>A specialization of hasElement that is used to relate a claim to the viewpoint that includes it</p>    </div>
+    <pre class="frame ObjectProperty"><span class="sec">ObjectProperty:</span> <a class="t" href="#includesClaim" title="includesClaim">nco:includesClaim</a>
+<span class="sec">SubPropertyOf:</span>
+    <a class="t" href="#hasElement" title="has element">nco:hasElement</a>
+<span class="sec">Domain:</span>
+    <a class="t" href="#Viewpoint" title="Viewpoint">nco:Viewpoint</a>
+<span class="sec">Range:</span>
+    <a class="t" href="#Claim" title="Claim">nco:Claim</a>
+<span class="sec">InverseOf:</span>
+    <a class="t" href="#isClaimOf" title="is claim of">nco:isClaimOf</a></pre>
+<p class="refs">Used in: <a href="#isClaimOf">is claim of</a></p>  </article>
+  <article class="term" id="isAspectOf" data-term="is aspect of isaspectof">
+    <h3><a class="self" href="#isAspectOf">is aspect of</a></h3>
+    <div class="iriline">
+      <span>http://data.open.ac.uk/ontology/newsclassification/v2#isAspectOf</span>
+      <button type="button" data-copy="http://data.open.ac.uk/ontology/newsclassification/v2#isAspectOf">Copy IRI</button>
+    </div>
+    <div class="prose">
+    </div>
+    <pre class="frame ObjectProperty"><span class="sec">ObjectProperty:</span> <a class="t" href="#isAspectOf" title="is aspect of">nco:isAspectOf</a>
+<span class="sec">Domain:</span>
+    <a class="t" href="#Aspect" title="Aspect">nco:Aspect</a>
+<span class="sec">Range:</span>
+    <a class="x" href="http://www.w3.org/2002/07/owl#Thing" title="http://www.w3.org/2002/07/owl#Thing">owl:Thing</a>
+<span class="sec">InverseOf:</span>
+    <a class="t" href="#hasAspect" title="has aspect">nco:hasAspect</a></pre>
+<p class="refs">Used in: <a href="#hasAspect">has aspect</a>, <a href="#hasTopic">hasTopic</a></p>  </article>
+  <article class="term" id="isClaimOf" data-term="is claim of isclaimof">
+    <h3><a class="self" href="#isClaimOf">is claim of</a></h3>
+    <div class="iriline">
+      <span>http://data.open.ac.uk/ontology/newsclassification/v2#isClaimOf</span>
+      <button type="button" data-copy="http://data.open.ac.uk/ontology/newsclassification/v2#isClaimOf">Copy IRI</button>
+    </div>
+    <div class="prose">
+    </div>
+    <pre class="frame ObjectProperty"><span class="sec">ObjectProperty:</span> <a class="t" href="#isClaimOf" title="is claim of">nco:isClaimOf</a>
+<span class="sec">SubPropertyOf:</span>
+    <a class="t" href="#isElementOf" title="is element of">nco:isElementOf</a>
+<span class="sec">InverseOf:</span>
+    <a class="t" href="#includesClaim" title="includesClaim">nco:includesClaim</a></pre>
+<p class="refs">Used in: <a href="#hasTopic">hasTopic</a>, <a href="#hasViewpoint">hasViewpoint</a>, <a href="#includesClaim">includesClaim</a></p>  </article>
+  <article class="term" id="isElementOf" data-term="is element of iselementof">
+    <h3><a class="self" href="#isElementOf">is element of</a></h3>
+    <div class="iriline">
+      <span>http://data.open.ac.uk/ontology/newsclassification/v2#isElementOf</span>
+      <button type="button" data-copy="http://data.open.ac.uk/ontology/newsclassification/v2#isElementOf">Copy IRI</button>
+    </div>
+    <div class="prose">
+    </div>
+    <pre class="frame ObjectProperty"><span class="sec">ObjectProperty:</span> <a class="t" href="#isElementOf" title="is element of">nco:isElementOf</a>
+<span class="sec">Domain:</span>
+    <a class="x" href="http://www.w3.org/2002/07/owl#Thing" title="http://www.w3.org/2002/07/owl#Thing">owl:Thing</a>
+<span class="sec">Range:</span>
+    <a class="t" href="#Collection" title="Collection">nco:Collection</a>
+<span class="sec">InverseOf:</span>
+    <a class="t" href="#hasElement" title="has element">nco:hasElement</a></pre>
+<p class="refs">Used in: <a href="#hasElement">has element</a>, <a href="#isClaimOf">is claim of</a>, <a href="#satisfiesUf">satisfies</a></p>  </article>
+  <article class="term" id="subEventOf" data-term="is subevent of subeventof">
+    <h3><a class="self" href="#subEventOf">is subevent of</a></h3>
+    <div class="iriline">
+      <span>http://data.open.ac.uk/ontology/newsclassification/v2#subEventOf</span>
+      <button type="button" data-copy="http://data.open.ac.uk/ontology/newsclassification/v2#subEventOf">Copy IRI</button>
+    </div>
+    <div class="prose">
+<p>Captures hierarchical relations between events - e.g., the event &quot;verdict&quot; in a trial is a subEventOf of a broader &quot;trial&quot; event</p>    </div>
+    <pre class="frame ObjectProperty"><span class="sec">ObjectProperty:</span> <a class="t" href="#subEventOf" title="is subevent of">nco:subEventOf</a>
+<span class="sec">SubPropertyOf:</span>
+    <a class="t" href="#eventDependsOn" title="event depends on">nco:eventDependsOn</a>
+<span class="sec">Domain:</span>
+    <a class="t" href="#Event" title="Event">nco:Event</a>
+<span class="sec">Range:</span>
+    <a class="t" href="#Event" title="Event">nco:Event</a>
+<span class="sec">InverseOf:</span>
+    <a class="t" href="#hasSubEvent" title="has subevent">nco:hasSubEvent</a></pre>
+<p class="refs">Used in: <a href="#hasSubEvent">has subevent</a></p>  </article>
+  <article class="term" id="topicRoleOf" data-term="is topic role of topicroleof">
+    <h3><a class="self" href="#topicRoleOf">is topic role of</a></h3>
+    <div class="iriline">
+      <span>http://data.open.ac.uk/ontology/newsclassification/v2#topicRoleOf</span>
+      <button type="button" data-copy="http://data.open.ac.uk/ontology/newsclassification/v2#topicRoleOf">Copy IRI</button>
+    </div>
+    <div class="prose">
+<p>A given topic role is played by one and only thing.</p>    </div>
+    <pre class="frame ObjectProperty"><span class="sec">ObjectProperty:</span> <a class="t" href="#topicRoleOf" title="is topic role of">nco:topicRoleOf</a>
+<span class="sec">Characteristics:</span>
+    Functional,
+    InverseFunctional
+<span class="sec">Domain:</span>
+    <a class="t" href="#Topic" title="Topic">nco:Topic</a>
+<span class="sec">Range:</span>
+    <a class="x" href="http://www.w3.org/2002/07/owl#Thing" title="http://www.w3.org/2002/07/owl#Thing">owl:Thing</a>
+<span class="sec">InverseOf:</span>
+    <a class="t" href="#topicRole" title="topicRole">nco:topicRole</a></pre>
+<p class="refs">Used in: <a href="#hasTopic">hasTopic</a>, <a href="#Topic">Topic</a>, <a href="#topicRole">topicRole</a></p>  </article>
+  <article class="term" id="isUnifyingFactorOf" data-term="is unifying factor of isunifyingfactorof">
+    <h3><a class="self" href="#isUnifyingFactorOf">is unifying factor of</a></h3>
+    <div class="iriline">
+      <span>http://data.open.ac.uk/ontology/newsclassification/v2#isUnifyingFactorOf</span>
+      <button type="button" data-copy="http://data.open.ac.uk/ontology/newsclassification/v2#isUnifyingFactorOf">Copy IRI</button>
+    </div>
+    <div class="prose">
+    </div>
+    <pre class="frame ObjectProperty"><span class="sec">ObjectProperty:</span> <a class="t" href="#isUnifyingFactorOf" title="is unifying factor of">nco:isUnifyingFactorOf</a>
+<span class="sec">InverseOf:</span>
+    <a class="t" href="#hasUnifyingFactor" title="has unifying factor">nco:hasUnifyingFactor</a></pre>
+<p class="refs">Used in: <a href="#hasUnifyingFactor">has unifying factor</a></p>  </article>
+  <article class="term" id="isJustificationOf" data-term="isjustificationof isjustificationof">
+    <h3><a class="self" href="#isJustificationOf">isJustificationOf</a></h3>
+    <div class="iriline">
+      <span>http://data.open.ac.uk/ontology/newsclassification/v2#isJustificationOf</span>
+      <button type="button" data-copy="http://data.open.ac.uk/ontology/newsclassification/v2#isJustificationOf">Copy IRI</button>
+    </div>
+    <div class="prose">
+    </div>
+    <pre class="frame ObjectProperty"><span class="sec">ObjectProperty:</span> <a class="t" href="#isJustificationOf" title="isJustificationOf">nco:isJustificationOf</a>
+<span class="sec">InverseOf:</span>
+    <a class="t" href="#hasJustification" title="has justification">nco:hasJustification</a></pre>
+<p class="refs">Used in: <a href="#hasJustification">has justification</a></p>  </article>
+  <article class="term" id="isOmittedEventOf" data-term="isomittedeventof isomittedeventof">
+    <h3><a class="self" href="#isOmittedEventOf">isOmittedEventOf</a></h3>
+    <div class="iriline">
+      <span>http://data.open.ac.uk/ontology/newsclassification/v2#isOmittedEventOf</span>
+      <button type="button" data-copy="http://data.open.ac.uk/ontology/newsclassification/v2#isOmittedEventOf">Copy IRI</button>
+    </div>
+    <div class="prose">
+    </div>
+    <pre class="frame ObjectProperty"><span class="sec">ObjectProperty:</span> <a class="t" href="#isOmittedEventOf" title="isOmittedEventOf">nco:isOmittedEventOf</a>
+<span class="sec">InverseOf:</span>
+    <a class="t" href="#hasOmittedEvent" title="has omitted event">nco:hasOmittedEvent</a></pre>
+<p class="refs">Used in: <a href="#hasOmittedEvent">has omitted event</a>, <a href="#hasTime">has time</a></p>  </article>
+  <article class="term" id="isTimeOf" data-term="istimeof istimeof">
+    <h3><a class="self" href="#isTimeOf">isTimeOf</a></h3>
+    <div class="iriline">
+      <span>http://data.open.ac.uk/ontology/newsclassification/v2#isTimeOf</span>
+      <button type="button" data-copy="http://data.open.ac.uk/ontology/newsclassification/v2#isTimeOf">Copy IRI</button>
+    </div>
+    <div class="prose">
+    </div>
+    <pre class="frame ObjectProperty"><span class="sec">ObjectProperty:</span> <a class="t" href="#isTimeOf" title="isTimeOf">nco:isTimeOf</a>
+<span class="sec">InverseOf:</span>
+    <a class="t" href="#hasTime" title="has time">nco:hasTime</a></pre>
+<p class="refs">Used in: <a href="#general-axioms">General axioms</a>, <a href="#hasTime">has time</a></p>  </article>
+  <article class="term" id="object" data-term="object object">
+    <h3><a class="self" href="#object">object</a></h3>
+    <div class="iriline">
+      <span>http://data.open.ac.uk/ontology/newsclassification/v2#object</span>
+      <button type="button" data-copy="http://data.open.ac.uk/ontology/newsclassification/v2#object">Copy IRI</button>
+    </div>
+    <div class="prose">
+    </div>
+    <pre class="frame ObjectProperty"><span class="sec">ObjectProperty:</span> <a class="t" href="#object" title="object">nco:object</a>
+<span class="sec">Domain:</span>
+    <a class="t" href="#Statement" title="Statement">nco:Statement</a>
+<span class="sec">Range:</span>
+    <a class="x" href="http://www.w3.org/2002/07/owl#Thing" title="http://www.w3.org/2002/07/owl#Thing">owl:Thing</a></pre>
+<p class="refs">Used in: <a href="#hasTopic">hasTopic</a></p>  </article>
+  <article class="term" id="preconditionFor" data-term="precondition for preconditionfor">
+    <h3><a class="self" href="#preconditionFor">precondition for</a></h3>
+    <div class="iriline">
+      <span>http://data.open.ac.uk/ontology/newsclassification/v2#preconditionFor</span>
+      <button type="button" data-copy="http://data.open.ac.uk/ontology/newsclassification/v2#preconditionFor">Copy IRI</button>
+    </div>
+    <div class="prose">
+    </div>
+    <pre class="frame ObjectProperty"><span class="sec">ObjectProperty:</span> <a class="t" href="#preconditionFor" title="precondition for">nco:preconditionFor</a>
+<span class="sec">Characteristics:</span>
+    Transitive
+<span class="sec">Domain:</span>
+    <a class="t" href="#EventOrSituation" title="EventOrSituation">nco:EventOrSituation</a>
+<span class="sec">Range:</span>
+    <a class="t" href="#EventOrSituation" title="EventOrSituation">nco:EventOrSituation</a>
+<span class="sec">InverseOf:</span>
+    <a class="t" href="#dependsOn" title="depends on">nco:dependsOn</a></pre>
+<p class="refs">Used in: <a href="#dependsOn">depends on</a>, <a href="#preconditionForEvent">precondition for event</a></p>  </article>
+  <article class="term" id="preconditionForEvent" data-term="precondition for event preconditionforevent">
+    <h3><a class="self" href="#preconditionForEvent">precondition for event</a></h3>
+    <div class="iriline">
+      <span>http://data.open.ac.uk/ontology/newsclassification/v2#preconditionForEvent</span>
+      <button type="button" data-copy="http://data.open.ac.uk/ontology/newsclassification/v2#preconditionForEvent">Copy IRI</button>
+    </div>
+    <div class="prose">
+    </div>
+    <pre class="frame ObjectProperty"><span class="sec">ObjectProperty:</span> <a class="t" href="#preconditionForEvent" title="precondition for event">nco:preconditionForEvent</a>
+<span class="sec">SubPropertyOf:</span>
+    <a class="t" href="#preconditionFor" title="precondition for">nco:preconditionFor</a>
+<span class="sec">Domain:</span>
+    <a class="t" href="#EventOrSituation" title="EventOrSituation">nco:EventOrSituation</a>
+<span class="sec">Range:</span>
+    <a class="t" href="#Event" title="Event">nco:Event</a>
+<span class="sec">InverseOf:</span>
+    <a class="t" href="#eventDependsOn" title="event depends on">nco:eventDependsOn</a></pre>
+<p class="refs">Used in: <a href="#eventDependsOn">event depends on</a>, <a href="#hasSubEvent">has subevent</a></p>  </article>
+  <article class="term" id="predicate" data-term="predicate predicate">
+    <h3><a class="self" href="#predicate">predicate</a></h3>
+    <div class="iriline">
+      <span>http://data.open.ac.uk/ontology/newsclassification/v2#predicate</span>
+      <button type="button" data-copy="http://data.open.ac.uk/ontology/newsclassification/v2#predicate">Copy IRI</button>
+    </div>
+    <div class="prose">
+    </div>
+    <pre class="frame ObjectProperty"><span class="sec">ObjectProperty:</span> <a class="t" href="#predicate" title="predicate">nco:predicate</a>
+<span class="sec">Domain:</span>
+    <a class="t" href="#Statement" title="Statement">nco:Statement</a>
+<span class="sec">Range:</span>
+    <a class="t" href="#Predicate" title="Predicate">nco:Predicate</a></pre>
+<p class="refs">Used in: <a href="#hasTopic">hasTopic</a></p>  </article>
+  <article class="term" id="ufSatisfiedBy" data-term="satisfied by ufsatisfiedby">
+    <h3><a class="self" href="#ufSatisfiedBy">satisfied by</a></h3>
+    <div class="iriline">
+      <span>http://data.open.ac.uk/ontology/newsclassification/v2#ufSatisfiedBy</span>
+      <button type="button" data-copy="http://data.open.ac.uk/ontology/newsclassification/v2#ufSatisfiedBy">Copy IRI</button>
+    </div>
+    <div class="prose">
+    </div>
+    <pre class="frame ObjectProperty"><span class="sec">ObjectProperty:</span> <a class="t" href="#ufSatisfiedBy" title="satisfied by">nco:ufSatisfiedBy</a>
+<span class="sec">InverseOf:</span>
+    <a class="t" href="#satisfiesUf" title="satisfies">nco:satisfiesUf</a></pre>
+<p class="refs">Used in: <a href="#hasElement">has element</a>, <a href="#satisfiesUf">satisfies</a></p>  </article>
+  <article class="term" id="satisfiesUf" data-term="satisfies satisfiesuf">
+    <h3><a class="self" href="#satisfiesUf">satisfies</a></h3>
+    <div class="iriline">
+      <span>http://data.open.ac.uk/ontology/newsclassification/v2#satisfiesUf</span>
+      <button type="button" data-copy="http://data.open.ac.uk/ontology/newsclassification/v2#satisfiesUf">Copy IRI</button>
+    </div>
+    <div class="prose">
+<p>An element can be part of a collection if and only if it satisfies the relevant unifying factor. This relation captures the relation between the element in a collection and the relevant unifying factor.  In general, we expect instances of class Collection to specify this relation in domain-dependent ways</p>    </div>
+    <pre class="frame ObjectProperty"><span class="sec">ObjectProperty:</span> <a class="t" href="#satisfiesUf" title="satisfies">nco:satisfiesUf</a>
+<span class="sec">SubPropertyChain:</span>
+    <a class="t" href="#isElementOf" title="is element of">nco:isElementOf</a> <span class="kw">o</span> <a class="t" href="#hasUnifyingFactor" title="has unifying factor">nco:hasUnifyingFactor</a>
+<span class="sec">Domain:</span>
+    <a class="t" href="#isElementOf" title="is element of">nco:isElementOf</a> <span class="kw">some</span> <a class="t" href="#Collection" title="Collection">nco:Collection</a>
+<span class="sec">Range:</span>
+    <a class="t" href="#UnifyingFactor" title="Unifying factor">nco:UnifyingFactor</a>
+<span class="sec">InverseOf:</span>
+    <a class="t" href="#ufSatisfiedBy" title="satisfied by">nco:ufSatisfiedBy</a></pre>
+<p class="refs">Used in: <a href="#ufSatisfiedBy">satisfied by</a></p>  </article>
+  <article class="term" id="subject" data-term="subject subject">
+    <h3><a class="self" href="#subject">subject</a></h3>
+    <div class="iriline">
+      <span>http://data.open.ac.uk/ontology/newsclassification/v2#subject</span>
+      <button type="button" data-copy="http://data.open.ac.uk/ontology/newsclassification/v2#subject">Copy IRI</button>
+    </div>
+    <div class="prose">
+    </div>
+    <pre class="frame ObjectProperty"><span class="sec">ObjectProperty:</span> <a class="t" href="#subject" title="subject">nco:subject</a>
+<span class="sec">Domain:</span>
+    <a class="t" href="#Statement" title="Statement">nco:Statement</a>
+<span class="sec">Range:</span>
+    <a class="x" href="http://www.w3.org/2002/07/owl#Thing" title="http://www.w3.org/2002/07/owl#Thing">owl:Thing</a></pre>
+<p class="refs">Used in: <a href="#hasTopic">hasTopic</a></p>  </article>
+  <article class="term" id="subTopicOf" data-term="subtopic of subtopicof">
+    <h3><a class="self" href="#subTopicOf">subtopic of</a></h3>
+    <div class="iriline">
+      <span>http://data.open.ac.uk/ontology/newsclassification/v2#subTopicOf</span>
+      <button type="button" data-copy="http://data.open.ac.uk/ontology/newsclassification/v2#subTopicOf">Copy IRI</button>
+    </div>
+    <div class="prose">
+    </div>
+    <pre class="frame ObjectProperty"><span class="sec">ObjectProperty:</span> <a class="t" href="#subTopicOf" title="subtopic of">nco:subTopicOf</a>
+<span class="sec">SubPropertyOf:</span>
+    <a class="x" href="http://www.w3.org/2004/02/skos/core#broaderTransitive" title="http://www.w3.org/2004/02/skos/core#broaderTransitive">skos:broaderTransitive</a>
+<span class="sec">Characteristics:</span>
+    Transitive
+<span class="sec">Domain:</span>
+    <a class="t" href="#Topic" title="Topic">nco:Topic</a>
+<span class="sec">Range:</span>
+    <a class="t" href="#Topic" title="Topic">nco:Topic</a>
+<span class="sec">InverseOf:</span>
+    <a class="t" href="#hasSubTopic" title="has subtopic">nco:hasSubTopic</a></pre>
+<p class="refs">Used in: <a href="#hasSubTopic">has subtopic</a>, <a href="#hasTopic">hasTopic</a></p>  </article>
+  <article class="term" id="topicInNewsItem" data-term="topicinnewsitem topicinnewsitem">
+    <h3><a class="self" href="#topicInNewsItem">topicInNewsItem</a></h3>
+    <div class="iriline">
+      <span>http://data.open.ac.uk/ontology/newsclassification/v2#topicInNewsItem</span>
+      <button type="button" data-copy="http://data.open.ac.uk/ontology/newsclassification/v2#topicInNewsItem">Copy IRI</button>
+    </div>
+    <div class="prose">
+    </div>
+    <pre class="frame ObjectProperty"><span class="sec">ObjectProperty:</span> <a class="t" href="#topicInNewsItem" title="topicInNewsItem">nco:topicInNewsItem</a>
+<span class="sec">SubPropertyOf:</span>
+    <a class="t" href="#inNewsItem" title="in news item">nco:inNewsItem</a>
+<span class="sec">Domain:</span>
+    <a class="t" href="#Topic" title="Topic">nco:Topic</a>
+<span class="sec">Range:</span>
+    <a class="t" href="#NewsItem" title="News item">nco:NewsItem</a>
+<span class="sec">InverseOf:</span>
+    <a class="t" href="#hasTopic" title="hasTopic">nco:hasTopic</a></pre>
+<p class="refs">Used in: <a href="#hasTopic">hasTopic</a></p>  </article>
+  <article class="term" id="topicRole" data-term="topicrole topicrole">
+    <h3><a class="self" href="#topicRole">topicRole</a></h3>
+    <div class="iriline">
+      <span>http://data.open.ac.uk/ontology/newsclassification/v2#topicRole</span>
+      <button type="button" data-copy="http://data.open.ac.uk/ontology/newsclassification/v2#topicRole">Copy IRI</button>
+    </div>
+    <div class="prose">
+<p>It is essential to distinguish an entity, e.g., the individual J.F. Kennedy, from the associated topic, e.g., T_J.F. Kennedy.  These are two different ontological objects with very different properties. For instance, while the time span of  J.F. Kennedy the person was 1917-1963,  the time span of the associated topic continued after his death.  More in general, this relation is needed every time an individual in our knowledge base, which is not ontologically a topic (e.g., a person, an event, a statement, etc.) plays the role of a topic in the model.</p>    </div>
+    <pre class="frame ObjectProperty"><span class="sec">ObjectProperty:</span> <a class="t" href="#topicRole" title="topicRole">nco:topicRole</a>
+<span class="sec">Characteristics:</span>
+    Functional,
+    InverseFunctional
+<span class="sec">Domain:</span>
+    <a class="x" href="http://www.w3.org/2002/07/owl#Thing" title="http://www.w3.org/2002/07/owl#Thing">owl:Thing</a>
+<span class="sec">Range:</span>
+    <a class="t" href="#Topic" title="Topic">nco:Topic</a>
+<span class="sec">InverseOf:</span>
+    <a class="t" href="#topicRoleOf" title="is topic role of">nco:topicRoleOf</a></pre>
+<p class="refs">Used in: <a href="#hasTopic">hasTopic</a>, <a href="#topicRoleOf">is topic role of</a></p>  </article>
+  <article class="term" id="viewpointInNewsItem" data-term="viewpointinnewsitem viewpointinnewsitem">
+    <h3><a class="self" href="#viewpointInNewsItem">viewpointInNewsItem</a></h3>
+    <div class="iriline">
+      <span>http://data.open.ac.uk/ontology/newsclassification/v2#viewpointInNewsItem</span>
+      <button type="button" data-copy="http://data.open.ac.uk/ontology/newsclassification/v2#viewpointInNewsItem">Copy IRI</button>
+    </div>
+    <div class="prose">
+    </div>
+    <pre class="frame ObjectProperty"><span class="sec">ObjectProperty:</span> <a class="t" href="#viewpointInNewsItem" title="viewpointInNewsItem">nco:viewpointInNewsItem</a>
+<span class="sec">SubPropertyOf:</span>
+    <a class="t" href="#inNewsItem" title="in news item">nco:inNewsItem</a>
+<span class="sec">Domain:</span>
+    <a class="t" href="#Viewpoint" title="Viewpoint">nco:Viewpoint</a>
+<span class="sec">Range:</span>
+    <a class="t" href="#NewsItem" title="News item">nco:NewsItem</a>
+<span class="sec">InverseOf:</span>
+    <a class="t" href="#hasViewpoint" title="hasViewpoint">nco:hasViewpoint</a></pre>
+<p class="refs">Used in: <a href="#hasViewpoint">hasViewpoint</a></p>  </article>
+</section>
+<section id="dataproperty-index">
+  <h2><span class="n">5</span>Data properties</h2>
+  <article class="term" id="hasText" data-term="hastext hastext">
+    <h3><a class="self" href="#hasText">hasText</a></h3>
+    <div class="iriline">
+      <span>http://data.open.ac.uk/ontology/newsclassification/v2#hasText</span>
+      <button type="button" data-copy="http://data.open.ac.uk/ontology/newsclassification/v2#hasText">Copy IRI</button>
+    </div>
+    <div class="prose">
+    </div>
+    <pre class="frame DataProperty"><span class="sec">DataProperty:</span> <a class="t" href="#hasText" title="hasText">nco:hasText</a>
+<span class="sec">Range:</span>
+    <a class="x" href="http://www.w3.org/2001/XMLSchema#string" title="http://www.w3.org/2001/XMLSchema#string">xsd:string</a></pre>
+<p class="refs">Used in: <a href="#Utterance">Utterance</a></p>  </article>
+  <article class="term" id="hasTextContext" data-term="hastextcontext hastextcontext">
+    <h3><a class="self" href="#hasTextContext">hasTextContext</a></h3>
+    <div class="iriline">
+      <span>http://data.open.ac.uk/ontology/newsclassification/v2#hasTextContext</span>
+      <button type="button" data-copy="http://data.open.ac.uk/ontology/newsclassification/v2#hasTextContext">Copy IRI</button>
+    </div>
+    <div class="prose">
+    </div>
+    <pre class="frame DataProperty"><span class="sec">DataProperty:</span> <a class="t" href="#hasTextContext" title="hasTextContext">nco:hasTextContext</a>
+<span class="sec">Range:</span>
+    <a class="x" href="http://www.w3.org/2001/XMLSchema#string" title="http://www.w3.org/2001/XMLSchema#string">xsd:string</a></pre>
+<p class="refs">Used in: <a href="#Utterance">Utterance</a></p>  </article>
+  <article class="term" id="hasTitle" data-term="hastitle hastitle">
+    <h3><a class="self" href="#hasTitle">hasTitle</a></h3>
+    <div class="iriline">
+      <span>http://data.open.ac.uk/ontology/newsclassification/v2#hasTitle</span>
+      <button type="button" data-copy="http://data.open.ac.uk/ontology/newsclassification/v2#hasTitle">Copy IRI</button>
+    </div>
+    <div class="prose">
+    </div>
+    <pre class="frame DataProperty"><span class="sec">DataProperty:</span> <a class="t" href="#hasTitle" title="hasTitle">nco:hasTitle</a>
+<span class="sec">Domain:</span>
+    <a class="t" href="#NewsItem" title="News item">nco:NewsItem</a>
+<span class="sec">Range:</span>
+    <a class="x" href="http://www.w3.org/2001/XMLSchema#string" title="http://www.w3.org/2001/XMLSchema#string">xsd:string</a></pre>
+<p class="refs">Used in: <a href="#NewsItem">News item</a></p>  </article>
+  <article class="term" id="hasURL" data-term="hasurl hasurl">
+    <h3><a class="self" href="#hasURL">hasURL</a></h3>
+    <div class="iriline">
+      <span>http://data.open.ac.uk/ontology/newsclassification/v2#hasURL</span>
+      <button type="button" data-copy="http://data.open.ac.uk/ontology/newsclassification/v2#hasURL">Copy IRI</button>
+    </div>
+    <div class="prose">
+    </div>
+    <pre class="frame DataProperty"><span class="sec">DataProperty:</span> <a class="t" href="#hasURL" title="hasURL">nco:hasURL</a></pre>
+<p class="refs">Used in: <a href="#NewsItem">News item</a></p>  </article>
+</section>
+<section id="individual-index">
+  <h2><span class="n">6</span>Named individuals</h2>
+  <article class="term" id="directUtterance" data-term="directutterance directutterance">
+    <h3><a class="self" href="#directUtterance">directUtterance</a></h3>
+    <div class="iriline">
+      <span>http://data.open.ac.uk/ontology/newsclassification/v2#directUtterance</span>
+      <button type="button" data-copy="http://data.open.ac.uk/ontology/newsclassification/v2#directUtterance">Copy IRI</button>
+    </div>
+    <div class="prose">
+    </div>
+    <pre class="frame Individual"><span class="sec">Individual:</span> <a class="t" href="#directUtterance" title="directUtterance">nco:directUtterance</a>
+<span class="sec">Types:</span>
+    <a class="t" href="#UtteranceType" title="UtteranceType">nco:UtteranceType</a></pre>
+  </article>
+  <article class="term" id="hasTopic-individual" data-term="hastopic hastopic">
+    <h3><a class="self" href="#hasTopic-individual">hasTopic</a></h3>
+    <div class="iriline">
+      <span>http://data.open.ac.uk/ontology/newsclassification/v2#hasTopic</span>
+      <button type="button" data-copy="http://data.open.ac.uk/ontology/newsclassification/v2#hasTopic">Copy IRI</button>
+    </div>
+    <div class="prose">
+<p>captures the relation between a news item and a topic, which is the focus of the news item in question</p>    </div>
+    <pre class="frame Individual"><span class="sec">Individual:</span> <a class="t" href="#hasTopic" title="hasTopic">nco:hasTopic</a>
+<span class="sec">Types:</span>
+    <a class="t" href="#Predicate" title="Predicate">nco:Predicate</a></pre>
+<p class="refs">Used in: <a href="#topicInNewsItem">topicInNewsItem</a></p>  </article>
+  <article class="term" id="indirectUtterance" data-term="indirectutterance indirectutterance">
+    <h3><a class="self" href="#indirectUtterance">indirectUtterance</a></h3>
+    <div class="iriline">
+      <span>http://data.open.ac.uk/ontology/newsclassification/v2#indirectUtterance</span>
+      <button type="button" data-copy="http://data.open.ac.uk/ontology/newsclassification/v2#indirectUtterance">Copy IRI</button>
+    </div>
+    <div class="prose">
+    </div>
+    <pre class="frame Individual"><span class="sec">Individual:</span> <a class="t" href="#indirectUtterance" title="indirectUtterance">nco:indirectUtterance</a>
+<span class="sec">Types:</span>
+    <a class="t" href="#UtteranceType" title="UtteranceType">nco:UtteranceType</a></pre>
+  </article>
+  <article class="term" id="partiallyDirectUtterance" data-term="partiallydirectutterance partiallydirectutterance">
+    <h3><a class="self" href="#partiallyDirectUtterance">partiallyDirectUtterance</a></h3>
+    <div class="iriline">
+      <span>http://data.open.ac.uk/ontology/newsclassification/v2#partiallyDirectUtterance</span>
+      <button type="button" data-copy="http://data.open.ac.uk/ontology/newsclassification/v2#partiallyDirectUtterance">Copy IRI</button>
+    </div>
+    <div class="prose">
+    </div>
+    <pre class="frame Individual"><span class="sec">Individual:</span> <a class="t" href="#partiallyDirectUtterance" title="partiallyDirectUtterance">nco:partiallyDirectUtterance</a>
+<span class="sec">Types:</span>
+    <a class="t" href="#UtteranceType" title="UtteranceType">nco:UtteranceType</a></pre>
+  </article>
+</section>
+
+<section id="general-axioms">
+  <h2><span class="n">7</span>General axioms</h2>
+<pre class="frame general"><span class="sec">ObjectProperty:</span> <a class="x" href="http://www.w3.org/2006/time#intervalBefore" title="http://www.w3.org/2006/time#intervalBefore">time:intervalBefore</a>
+<span class="sec">SubPropertyChain:</span>
+    <a class="t" href="#isTimeOf" title="isTimeOf">nco:isTimeOf</a> <span class="kw">o</span> <a class="t" href="#hasPrediction" title="hasPrediction">nco:hasPrediction</a> <span class="kw">o</span> <a class="t" href="#hasTime" title="has time">nco:hasTime</a></pre><pre class="frame general"><span class="sec">DisjointClasses:</span>
+<a class="t" href="#Agent" title="Agent">nco:Agent</a>,<a class="t" href="#Collection" title="Collection">nco:Collection</a>,<a class="t" href="#Event" title="Event">nco:Event</a>,<a class="t" href="#NewsItem" title="News item">nco:NewsItem</a>,<a class="t" href="#Statement" title="Statement">nco:Statement</a>,<a class="t" href="#UnifyingFactor" title="Unifying factor">nco:UnifyingFactor</a></pre></section>
+
+<section id="namespaces">
+  <h2><span class="n">8</span>Namespaces</h2>
+  <table class="ns">
+<tr><td>dcterms:</td><td>http://purl.org/dc/terms/</td></tr><tr><td>nco:</td><td>http://data.open.ac.uk/ontology/newsclassification/v2#</td></tr><tr><td>owl:</td><td>http://www.w3.org/2002/07/owl#</td></tr><tr><td>rdf:</td><td>http://www.w3.org/1999/02/22-rdf-syntax-ns#</td></tr><tr><td>rdfs:</td><td>http://www.w3.org/2000/01/rdf-schema#</td></tr><tr><td>skos:</td><td>http://www.w3.org/2004/02/skos/core#</td></tr><tr><td>time:</td><td>http://www.w3.org/2006/time#</td></tr><tr><td>xml:</td><td>http://www.w3.org/XML/1998/namespace</td></tr><tr><td>xsd:</td><td>http://www.w3.org/2001/XMLSchema#</td></tr>  </table>
+</section>
+
+<footer>
+  Generated from <a href="ontology.ttl">the ontology source</a> by <code>build/build.py</code> (ROBOT / OWL API Manchester renderer).
+</footer>
+</main>
+</div>
+
+<script>
+(function () {
+  // Legacy LODE anchors (#d4eNNN) from the 1.4.x documentation.
+  var legacy = {"d4e1006": "Collection", "d4e1055": "CollectionOfEvents", "d4e107": "characterisedBy", "d4e1076": "Description", "d4e1140": "Event", "d4e117": "characterises", "d4e1178": "EventOrSituation", "d4e1199": "Justification", "d4e1209": "Location", "d4e1221": "NegativeEvent", "d4e1231": "NewsItem", "d4e1241": "OmissionEvent", "d4e1281": "Predicate", "d4e1289": "PredictionEvent", "d4e1325": "Situation", "d4e133": "claimInNewsItem", "d4e1378": "Statement", "d4e1389": "Topic", "d4e1423": "UnifyingFactor", "d4e1432": "Viewpoint", "d4e146": "concernsTopic", "d4e1482": "hasTopic", "d4e161": "dependsOn", "d4e178": "eventDependsOn", "d4e198": "hasAgent", "d4e221": "hasAgentComponent", "d4e234": "hasAgentRole", "d4e246": "hasAspect", "d4e263": "hasClaim", "d4e279": "hasElement", "d4e29": "http://purl.org/dc/terms/contributor", "d4e300": "hasJustification", "d4e314": "hasLocation", "d4e327": "hasOmittedEvent", "d4e34": "http://purl.org/dc/terms/created", "d4e344": "hasPrediction", "d4e356": "hasSubEvent", "d4e376": "hasSubTopic", "d4e38": "http://purl.org/dc/terms/creator", "d4e398": "hasTime", "d4e42": "http://purl.org/dc/terms/description", "d4e422": "hasTopic", "d4e47": "http://purl.org/dc/terms/isVersionOf", "d4e497": "hasUnifyingFactor", "d4e51": "http://purl.org/dc/terms/license", "d4e514": "hasViewpoint", "d4e535": "inNewsItem", "d4e544": "includesClaim", "d4e55": "http://purl.org/dc/terms/modified", "d4e560": "isAspectOf", "d4e572": "isClaimOf", "d4e583": "isElementOf", "d4e60": "http://purl.org/dc/terms/rights", "d4e608": "isUnifyingFactorOf", "d4e616": "object", "d4e626": "preconditionFor", "d4e64": "http://purl.org/dc/terms/title", "d4e640": "preconditionForEvent", "d4e654": "predicate", "d4e664": "satisfiesUf", "d4e68": "isRuleEnabled", "d4e697": "subEventOf", "d4e714": "subTopicOf", "d4e73": "pattern", "d4e731": "subject", "d4e740": "topicInNewsItem", "d4e751": "topicRole", "d4e771": "topicRoleOf", "d4e791": "ufSatisfiedBy", "d4e799": "viewpointInNewsItem", "d4e840": "Agent", "d4e850": "AgentComponent", "d4e895": "AgentRole", "d4e903": "Aspect", "d4e911": "CategoricalTopic", "d4e922": "Claim"};
+  function resolveLegacy() {
+    var h = location.hash.slice(1);
+    if (!/^d4e\d+$/.test(h)) return;
+    var local = legacy[h], note = document.getElementById('legacy-note');
+    if (local && document.getElementById(local)) {
+      history.replaceState(null, '', '#' + local);
+      document.getElementById(local).scrollIntoView();
+    } else {
+      note.hidden = false;
+      note.innerHTML = 'This link points to a term from version 1.4' +
+        (local ? ' (<code>' + local + '</code>)' : '') +
+        ' that is not in version 2.2. See the <a href="../archive/1.4/docs/index.html#' + h + '">1.4 documentation</a>.';
+    }
+  }
+  resolveLegacy();
+  window.addEventListener('hashchange', resolveLegacy);
+
+  // Copy IRI
+  document.addEventListener('click', function (ev) {
+    var b = ev.target.closest('button[data-copy]');
+    if (!b) return;
+    navigator.clipboard.writeText(b.dataset.copy).then(function () {
+      var t = b.textContent; b.textContent = 'Copied'; setTimeout(function () { b.textContent = t; }, 1200);
+    });
+  });
+
+  // Filter terms (sidebar and content)
+  var input = document.getElementById('filter');
+  input.addEventListener('input', function () {
+    var q = input.value.trim().toLowerCase(), any = false;
+    document.querySelectorAll('[data-term]').forEach(function (el) {
+      var hit = !q || el.dataset.term.indexOf(q) !== -1;
+      el.hidden = !hit; if (hit && el.tagName === 'LI') any = true;
+    });
+    document.getElementById('no-match').style.display = any || !q ? 'none' : 'block';
+  });
+
+  // Theme toggle (remembered per browser)
+  var root = document.documentElement, btn = document.getElementById('theme');
+  try { var saved = localStorage.getItem('nco-theme'); if (saved) root.dataset.theme = saved; } catch (e) {}
+  btn.addEventListener('click', function () {
+    var dark = root.dataset.theme ? root.dataset.theme === 'dark'
+      : matchMedia('(prefers-color-scheme: dark)').matches;
+    root.dataset.theme = dark ? 'light' : 'dark';
+    try { localStorage.setItem('nco-theme', root.dataset.theme); } catch (e) {}
+  });
+
+  // Highlight current term in the sidebar
+  if ('IntersectionObserver' in window) {
+    var links = {};
+    document.querySelectorAll('.toc ul a').forEach(function (a) { links[a.getAttribute('href').slice(1)] = a; });
+    var current;
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) {
+        if (e.isIntersecting && links[e.target.id]) {
+          if (current) current.classList.remove('here');
+          current = links[e.target.id]; current.classList.add('here');
+        }
+      });
+    }, { rootMargin: '0px 0px -80% 0px' });
+    document.querySelectorAll('article.term').forEach(function (a) { io.observe(a); });
+  }
+})();
+</script>
+</body>
+</html>

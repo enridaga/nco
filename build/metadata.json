@@ -1,0 +1,19 @@
+{
+  "title": "News Classification Ontology (NCO)",
+  "short": "NCO",
+  "version": "2.2",
+  "versionDir": "v2.2",
+  "released": "2025-06-25",
+  "prefix": "nco",
+  "siteBase": "https://enridaga.github.io/nco/",
+  "repo": "https://github.com/enridaga/nco",
+  "license": null,
+  "authors": [
+    {"name": "Enrico Motta", "affiliation": "The Open University"},
+    {"name": "Enrico Daga", "affiliation": "The Open University"},
+    {"name": "Aldo Gangemi", "affiliation": "ISTC-CNR"}
+  ],
+  "previous": [
+    {"version": "1.4.3", "href": "archive/1.4/docs/index.html"}
+  ]
+}

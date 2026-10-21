@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ title }}</title>
+<meta name="description" content="{{ title }} {{ meta.version }}: classes, properties and axioms in OWL Manchester syntax.">
+<link rel="canonical" href="{{ page_url }}">
+{% for name, href in serialisations %}
+{% if name == 'Turtle' %}<link rel="alternate" type="text/turtle" href="{{ href }}">{% endif %}
+{% if name == 'RDF/XML' %}<link rel="alternate" type="application/rdf+xml" href="{{ href }}">{% endif %}
+{% if name == 'JSON-LD' %}<link rel="alternate" type="application/ld+json" href="{{ href }}">{% endif %}
+{% endfor %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,650;1,6..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper: #ffffff;
+  --ink: #1c2230;
+  --muted: #5b6475;
+  --rule: #dce1e8;
+  --surface: #f4f6f9;
+  --link: #1d4e89;
+  --kw: #8a2d5c;
+  --sec: #6a7385;
+  --lit: #2f6b3a;
+  --ext: #5b6475;
+  --k-class: #1d4e89;
+  --k-prop: #8a2d5c;
+  --k-data: #9a5b13;
+  --k-ind: #2f6b3a;
+  --k-ann: #8a93a3;
+  --target: #fbf5df;
+  --serif: "Newsreader", Georgia, "Times New Roman", serif;
+  --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #12161d; --ink: #e3e7ee; --muted: #9aa3b2; --rule: #2b3340;
+    --surface: #1a2029; --link: #8db4f0; --kw: #e89ac0; --sec: #8f99aa;
+    --lit: #9bd3a3; --ext: #9aa3b2; --k-class: #8db4f0; --k-prop: #e89ac0;
+    --k-data: #e6b06a; --k-ind: #9bd3a3; --k-ann: #6c7686; --target: #1e2a3c;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #12161d; --ink: #e3e7ee; --muted: #9aa3b2; --rule: #2b3340;
+  --surface: #1a2029; --link: #8db4f0; --kw: #e89ac0; --sec: #8f99aa;
+  --lit: #9bd3a3; --ext: #9aa3b2; --k-class: #8db4f0; --k-prop: #e89ac0;
+  --k-data: #e6b06a; --k-ind: #9bd3a3; --k-ann: #6c7686; --target: #1e2a3c;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-padding-top: 1.5rem; }
+body {
+  margin: 0; background: var(--paper); color: var(--ink);
+  font: 400 1.125rem/1.6 var(--serif);
+  font-optical-sizing: auto;
+  text-rendering: optimizeLegibility;
+}
+a { color: var(--link); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+a:focus-visible, button:focus-visible, input:focus-visible {
+  outline: 2px solid var(--link); outline-offset: 2px; border-radius: 2px;
+}
+code { font: 0.86em/1 var(--mono); background: var(--surface); padding: 0.1em 0.3em; border-radius: 3px; }
+
+/* ---------- layout ---------- */
+.layout { display: grid; grid-template-columns: 17rem minmax(0, 1fr); }
+nav.toc {
+  position: sticky; top: 0; height: 100vh; overflow-y: auto;
+  border-right: 1px solid var(--rule); padding: 1.5rem 1.25rem 3rem;
+  font-size: 0.95rem; line-height: 1.35;
+}
+main { padding: 3rem clamp(1rem, 5vw, 4.5rem) 6rem; max-width: 60rem; }
+.prose { max-width: 42rem; }
+
+/* ---------- sidebar ---------- */
+.toc .brand { font-weight: 650; font-size: 1.05rem; text-decoration: none; color: var(--ink); }
+.toc .brand span { display: block; font-weight: 400; color: var(--muted); font-size: 0.9rem; }
+.toc input {
+  width: 100%; margin: 1rem 0 0.75rem; padding: 0.45rem 0.6rem;
+  font: inherit; font-size: 0.95rem; color: var(--ink);
+  background: var(--surface); border: 1px solid var(--rule); border-radius: 4px;
+}
+.toc ol, .toc ul { list-style: none; margin: 0; padding: 0; }
+.toc > ol > li { margin: 0.5rem 0; }
+.toc-body > ol > li > a { color: var(--ink); font-weight: 500; text-decoration: none; }
+.toc-body > ol > li > a:hover { color: var(--link); }
+.toc ul { margin: 0.25rem 0 0.5rem 0.75rem; border-left: 1px solid var(--rule); }
+.toc ul li a {
+  display: block; padding: 0.12rem 0 0.12rem 0.65rem; color: var(--muted);
+  text-decoration: none; font-size: 0.9rem;
+}
+.toc ul li a:hover, .toc a.here { color: var(--link); }
+.toc a.here { box-shadow: inset 2px 0 0 var(--link); }
+.toc .empty { display: none; color: var(--muted); font-size: 0.9rem; font-style: italic; }
+.toc .theme {
+  margin-top: 1.5rem; background: none; border: 1px solid var(--rule); color: var(--muted);
+  font: inherit; font-size: 0.85rem; padding: 0.3rem 0.6rem; border-radius: 4px; cursor: pointer;
+}
+
+/* ---------- header ---------- */
+header.doc h1 {
+  font-size: clamp(2.2rem, 4.5vw, 3.4rem); line-height: 1.05; font-weight: 500;
+  letter-spacing: -0.015em; margin: 0 0 0.4rem; max-width: 18ch;
+}
+header.doc .sub { color: var(--muted); margin: 0 0 2rem; font-style: italic; }
+dl.meta { display: grid; grid-template-columns: max-content 1fr; gap: 0.35rem 1.5rem; margin: 0 0 2.5rem; font-size: 1rem; }
+dl.meta dt { color: var(--muted); }
+dl.meta dd { margin: 0; overflow-wrap: anywhere; }
+dl.meta .iri { font-family: var(--mono); font-size: 0.86em; }
+.downloads a { margin-right: 0.9rem; white-space: nowrap; }
+
+/* ---------- sections ---------- */
+h2 {
+  font-size: 1.75rem; font-weight: 500; margin: 4rem 0 1rem; padding-top: 1rem;
+  border-top: 1px solid var(--rule); letter-spacing: -0.01em;
+}
+h2 .n, h3 .n { color: var(--muted); font-weight: 400; margin-right: 0.5rem; }
+h3 { font-size: 1.25rem; font-weight: 500; margin: 2rem 0 0.5rem; }
+.counts { color: var(--muted); }
+.tree ul { list-style: none; margin: 0; padding-left: 1.1rem; border-left: 1px solid var(--rule); }
+.tree > ul { padding-left: 0; border: 0; }
+.tree li { margin: 0.15rem 0; }
+.tree a { text-decoration: none; }
+.tree a:hover { text-decoration: underline; }
+.trees { display: grid; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); gap: 1rem 2.5rem; font-size: 1rem; }
+
+/* ---------- terms ---------- */
+article.term { margin: 0 0 3rem; padding-top: 0.5rem; scroll-margin-top: 1rem; }
+article.term:target .frame { background: var(--target); }
+article.term h3 { font-size: 1.6rem; margin: 0; font-weight: 500; letter-spacing: -0.01em; }
+article.term h3 a.self { color: inherit; text-decoration: none; }
+article.term h3 a.self:hover::after { content: "#"; color: var(--muted); margin-left: 0.35rem; font-weight: 400; }
+.iriline span { overflow-wrap: anywhere; }
+.iriline { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.25rem 0.75rem; margin: 0.2rem 0 0.8rem; font-family: var(--mono); font-size: 0.82rem; color: var(--muted); }
+.iriline button {
+  font: inherit; font-size: 0.78rem; color: var(--muted); background: none;
+  border: 1px solid var(--rule); border-radius: 3px; padding: 0.05rem 0.4rem; cursor: pointer;
+}
+.iriline button:hover { color: var(--link); border-color: var(--link); }
+.deprecated { color: #a3381e; font-family: var(--serif); font-style: italic; }
+.term .prose p { margin: 0 0 0.7rem; }
+.term .note { color: var(--muted); font-size: 1rem; }
+.term .note p { display: inline; }
+.term .note b { font-weight: 500; color: var(--ink); }
+
+pre.frame {
+  margin: 0.9rem 0 0.6rem; padding: 0.9rem 1.1rem; overflow-x: auto;
+  background: var(--surface); border-left: 3px solid var(--k-class);
+  border-radius: 0 4px 4px 0;
+  font: 400 0.86rem/1.6 var(--mono); tab-size: 4; color: var(--ink);
+}
+pre.frame.ObjectProperty { border-left-color: var(--k-prop); }
+pre.frame.DataProperty { border-left-color: var(--k-data); }
+pre.frame.Individual { border-left-color: var(--k-ind); }
+pre.frame.AnnotationProperty, pre.frame.general { border-left-color: var(--k-ann); }
+pre.frame a { text-decoration: none; }
+pre.frame a.t { color: var(--link); }
+pre.frame a.t:hover, pre.frame a.x:hover { text-decoration: underline; }
+pre.frame a.x { color: var(--ext); }
+pre.frame .kw { color: var(--kw); font-weight: 500; }
+pre.frame .sec { color: var(--sec); font-weight: 500; }
+pre.frame .lit { color: var(--lit); }
+pre.frame .head { font-weight: 500; }
+.refs { font-size: 0.95rem; color: var(--muted); margin: 0.2rem 0 0; }
+.refs a { white-space: nowrap; }
+
+table.ns { border-collapse: collapse; font-size: 0.9rem; width: 100%; }
+table.ns td { padding: 0.3rem 1rem 0.3rem 0; border-bottom: 1px solid var(--rule); vertical-align: top; }
+table.ns td:first-child { font-family: var(--mono); white-space: nowrap; }
+table.ns td:last-child { font-family: var(--mono); overflow-wrap: anywhere; color: var(--muted); }
+footer { margin-top: 5rem; color: var(--muted); font-size: 0.95rem; border-top: 1px solid var(--rule); padding-top: 1rem; }
+.legacy-note { background: var(--target); padding: 0.6rem 0.9rem; border-radius: 4px; font-size: 1rem; margin-bottom: 1.5rem; }
+
+@media (max-width: 860px) {
+  .layout { display: block; }
+  nav.toc { position: static; height: auto; border-right: 0; border-bottom: 1px solid var(--rule); padding: 1rem; }
+  nav.toc details:not([open]) .toc-body { display: none; }
+  main { padding: 2rem 1rem 4rem; }
+  dl.meta { grid-template-columns: 1fr; gap: 0; }
+  dl.meta dd { margin-bottom: 0.6rem; }
+}
+@media (min-width: 861px) { nav.toc summary { display: none; } }
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+@media print {
+  nav.toc { display: none; } .layout { display: block; }
+  pre.frame { white-space: pre-wrap; break-inside: avoid; }
+}
+</style>
+</head>
+<body>
+<div class="layout">
+
+<nav class="toc" aria-label="Contents">
+  <details open>
+  <summary>Contents</summary>
+  <div class="toc-body">
+  <a class="brand" href="#top">{{ meta.short }} <span>Version {{ meta.version }}</span></a>
+  <label for="filter" class="visually-hidden" style="position:absolute;left:-9999px">Filter terms</label>
+  <input id="filter" type="search" placeholder="Filter terms" autocomplete="off">
+  <p class="empty" id="no-match">No terms match.</p>
+  <ol>
+    <li><a href="#introduction">Introduction</a></li>
+    <li><a href="#overview">Overview</a></li>
+    {% for kind, name in sections %}
+    <li><a href="#{{ kind|lower }}-index">{{ name }}</a>
+      <ul>
+      {% for e in entries[kind] %}
+        <li data-term="{{ e.label|lower }} {{ e.local|lower }}"><a href="#{{ e.anchor }}">{{ e.label }}</a></li>
+      {% endfor %}
+      </ul>
+    </li>
+    {% endfor %}
+    {% if general %}<li><a href="#general-axioms">General axioms</a></li>{% endif %}
+    <li><a href="#namespaces">Namespaces</a></li>
+  </ol>
+  <button class="theme" id="theme" type="button">Switch theme</button>
+  </div>
+  </details>
+</nav>
+
+<main id="top">
+<div class="legacy-note" id="legacy-note" hidden></div>
+
+<header class="doc">
+  <h1>{{ title }}</h1>
+  <p class="sub">Ontology specification, version {{ meta.version }}{% if meta.released %}, released {{ meta.released }}{% endif %}</p>
+  <dl class="meta">
+    <dt>Ontology IRI</dt><dd class="iri">{{ onto }}</dd>
+    {% if version_iri %}<dt>Version IRI</dt><dd class="iri">{{ version_iri }}</dd>{% endif %}
+    <dt>Namespace</dt><dd><span class="iri">{{ prefix }}: &lt;{{ ns }}&gt;</span></dd>
+    <dt>This version</dt><dd><a href="{{ version_url }}">{{ version_url }}</a></dd>
+    <dt>Latest version</dt><dd><a href="{{ latest_url }}">{{ latest_url }}</a></dd>
+    {% if meta.previous %}<dt>Previous versions</dt><dd>{% for p in meta.previous %}<a href="{{ root }}{{ p.href }}">{{ p.version }}</a>{% if not loop.last %}, {% endif %}{% endfor %}</dd>{% endif %}
+    {% if meta.authors %}<dt>Authors</dt><dd>{% for a in meta.authors %}{{ a.name }}{% if a.affiliation %} ({{ a.affiliation }}){% endif %}{% if not loop.last %}<br>{% endif %}{% endfor %}</dd>{% endif %}
+    {% if imports %}<dt>Imports</dt><dd>{% for i in imports %}<a class="iri" href="{{ i }}">{{ i }}</a>{% if not loop.last %}<br>{% endif %}{% endfor %}</dd>{% endif %}
+    <dt>Download</dt><dd class="downloads">{% for name, href in serialisations %}<a href="{{ href }}">{{ name }}</a>{% endfor %}</dd>
+    {% if webvowl %}<dt>Visualise</dt><dd><a href="{{ webvowl }}">WebVOWL graph</a></dd>{% endif %}
+    {% if meta.license %}<dt>Licence</dt><dd><a href="{{ meta.license }}">{{ meta.license }}</a></dd>{% endif %}
+    <dt>Source</dt><dd><a href="{{ meta.repo }}">{{ meta.repo }}</a></dd>
+  </dl>
+</header>
+
+<section id="introduction">
+  <h2><span class="n">1</span>Introduction</h2>
+  <div class="prose">
+    {{ abstract }}
+    {% for n in notes %}{{ n }}{% endfor %}
+    <p>Each term below is described by its OWL&nbsp;2 <a href="https://www.w3.org/TR/owl2-manchester-syntax/">Manchester syntax</a> frame, generated from the ontology source with the OWL API. Names in a frame link to their definitions; terms from other vocabularies link to their IRIs.</p>
+  </div>
+</section>
+
+<section id="overview">
+  <h2><span class="n">2</span>Overview</h2>
+  <p class="counts">
+    {% for kind, name in sections %}{{ counts[kind] }} {{ name|lower }}{% if not loop.last %}, {% endif %}{% endfor %}{% if general %}, {{ general|length }} general axiom{{ 's' if general|length != 1 }}{% endif %}.
+  </p>
+  <div class="trees">
+    <div><h3>Class hierarchy</h3><div class="tree">{{ class_tree }}</div></div>
+    {% if oprop_tree %}<div><h3>Object property hierarchy</h3><div class="tree">{{ oprop_tree }}</div></div>{% endif %}
+  </div>
+</section>
+
+{% for kind, name in sections %}
+<section id="{{ kind|lower }}-index">
+  <h2><span class="n">{{ loop.index + 2 }}</span>{{ name }}</h2>
+  {% for e in entries[kind] %}
+  <article class="term" id="{{ e.anchor }}" data-term="{{ e.label|lower }} {{ e.local|lower }}">
+    <h3><a class="self" href="#{{ e.anchor }}">{{ e.label }}</a></h3>
+    <div class="iriline">
+      <span>{{ e.iri }}</span>
+      <button type="button" data-copy="{{ e.iri }}">Copy IRI</button>
+      {% if e.deprecated %}<span class="deprecated">Deprecated</span>{% endif %}
+    </div>
+    <div class="prose">
+      {% for d in e.definitions %}{{ d }}{% endfor %}
+      {% for c in e.comments %}{{ c }}{% endfor %}
+    </div>
+    <pre class="frame {{ kind }}">{{ e.code }}</pre>
+    {% if e.examples %}<div class="prose note"><b>Example.</b> {% for x in e.examples %}{{ x }}{% endfor %}</div>{% endif %}
+    {% if e.seealso %}<div class="prose note"><b>See also.</b> {% for x in e.seealso %}{{ x }}{% endfor %}</div>{% endif %}
+    {% if e.refs %}<p class="refs">Used in: {% for a, l in e.refs %}<a href="#{{ a }}">{{ l }}</a>{% if not loop.last %}, {% endif %}{% endfor %}</p>{% endif %}
+  </article>
+  {% endfor %}
+</section>
+{% endfor %}
+
+{% if general %}
+<section id="general-axioms">
+  <h2><span class="n">{{ sections|length + 3 }}</span>General axioms</h2>
+  {% for a in general %}<pre class="frame general">{{ a.code }}</pre>{% endfor %}
+</section>
+{% endif %}
+
+<section id="namespaces">
+  <h2><span class="n">{{ sections|length + (4 if general else 3) }}</span>Namespaces</h2>
+  <table class="ns">
+    {% for p, n in namespaces %}<tr><td>{{ p }}:</td><td>{{ n }}</td></tr>{% endfor %}
+  </table>
+</section>
+
+<footer>
+  Generated from <a href="{{ serialisations[0][1] }}">the ontology source</a> by <code>build/build.py</code> (ROBOT / OWL API Manchester renderer).
+</footer>
+</main>
+</div>
+
+<script>
+(function () {
+  // Legacy LODE anchors (#d4eNNN) from the 1.4.x documentation.
+  var legacy = {{ legacy }};
+  function resolveLegacy() {
+    var h = location.hash.slice(1);
+    if (!/^d4e\d+$/.test(h)) return;
+    var local = legacy[h], note = document.getElementById('legacy-note');
+    if (local && document.getElementById(local)) {
+      history.replaceState(null, '', '#' + local);
+      document.getElementById(local).scrollIntoView();
+    } else {
+      note.hidden = false;
+      note.innerHTML = 'This link points to a term from version 1.4' +
+        (local ? ' (<code>' + local + '</code>)' : '') +
+        ' that is not in version {{ meta.version }}. See the <a href="{{ root }}{{ meta.previous[0].href if meta.previous else "" }}#' + h + '">1.4 documentation</a>.';
+    }
+  }
+  resolveLegacy();
+  window.addEventListener('hashchange', resolveLegacy);
+
+  // Copy IRI
+  document.addEventListener('click', function (ev) {
+    var b = ev.target.closest('button[data-copy]');
+    if (!b) return;
+    navigator.clipboard.writeText(b.dataset.copy).then(function () {
+      var t = b.textContent; b.textContent = 'Copied'; setTimeout(function () { b.textContent = t; }, 1200);
+    });
+  });
+
+  // Filter terms (sidebar and content)
+  var input = document.getElementById('filter');
+  input.addEventListener('input', function () {
+    var q = input.value.trim().toLowerCase(), any = false;
+    document.querySelectorAll('[data-term]').forEach(function (el) {
+      var hit = !q || el.dataset.term.indexOf(q) !== -1;
+      el.hidden = !hit; if (hit && el.tagName === 'LI') any = true;
+    });
+    document.getElementById('no-match').style.display = any || !q ? 'none' : 'block';
+  });
+
+  // Theme toggle (remembered per browser)
+  var root = document.documentElement, btn = document.getElementById('theme');
+  try { var saved = localStorage.getItem('nco-theme'); if (saved) root.dataset.theme = saved; } catch (e) {}
+  btn.addEventListener('click', function () {
+    var dark = root.dataset.theme ? root.dataset.theme === 'dark'
+      : matchMedia('(prefers-color-scheme: dark)').matches;
+    root.dataset.theme = dark ? 'light' : 'dark';
+    try { localStorage.setItem('nco-theme', root.dataset.theme); } catch (e) {}
+  });
+
+  // Highlight current term in the sidebar
+  if ('IntersectionObserver' in window) {
+    var links = {};
+    document.querySelectorAll('.toc ul a').forEach(function (a) { links[a.getAttribute('href').slice(1)] = a; });
+    var current;
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) {
+        if (e.isIntersecting && links[e.target.id]) {
+          if (current) current.classList.remove('here');
+          current = links[e.target.id]; current.classList.add('here');
+        }
+      });
+    }, { rootMargin: '0px 0px -80% 0px' });
+    document.querySelectorAll('article.term').forEach(function (a) { io.observe(a); });
+  }
+})();
+</script>
+</body>
+</html>
